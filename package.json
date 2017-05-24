@@ -1,0 +1,13 @@
+{
+  "name": "ai-es-05",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Applicazioni Internet esercitazione 05",
+  "devDependencies": {
+    "bower": "^1.7.7",
+    "http-server": "^0.9.0"
+  },
+  "scripts": {
+    "start": "http-server ./app -a localhost -p 8000 -c-1"
+  }
+}
