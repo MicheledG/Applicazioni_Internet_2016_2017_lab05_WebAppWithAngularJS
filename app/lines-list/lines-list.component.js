@@ -8,7 +8,12 @@ angular
         controller: ['DataProvider',
             function (DataProvider) {
                 var self = this;
+                self.selectedLine = '';
                 self.lines = DataProvider;
+                self.selectLine = function (lineName){
+                    self.selectedLine = lineName;
+                    self.onSelectedLine({lineName: lineName});
+                }
             }
         ],
         bindings:{

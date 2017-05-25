@@ -1,0 +1,10 @@
+lines-list ul.list-group {
+    border: thin solid lightgray;
+    border-radius: 5px;
+    max-height: 700px;
+    overflow-y: scroll;
+}
+
+lines-list li:hover {
+    background: lightgray;
+}
