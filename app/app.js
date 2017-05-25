@@ -1,4 +1,4 @@
-var app = angular.module('App', ['ngRoute', 'ngResource', 'linesList'])
+var app = angular.module('App', ['ngRoute', 'ngResource', 'linesList', 'ui-leaflet'])
 
 app.config(function ($routeProvider, $locationProvider) {
     $routeProvider
