@@ -29,9 +29,17 @@
   </nav>
 
   <!-- Page Content -->
-  <div class="container">
-    <lines-list></lines-list>
-    <div ng-view></div>
+  <div class="container" ng-controller="MainCtrl as ctrl">
+    <div class="row">
+      <div class="col-md-4">
+        <lines-list on-selected-line="ctrl.setSelectedLine(lineName)"></lines-list>
+      </div>
+      <div class="col-md-8">
+        <p>Selected Line: {{ctrl.selectedLine}}</p>
+        <div ng-view></div>
+      </div>
+    </div>
+
   </div>
   <!-- /.container -->
 

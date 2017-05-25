@@ -1,12 +1,15 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-4">
-            <ul class="list-group">
-                <li class="list-group-item" ng-repeat="line in $ctrl.lines">
-                    <p>line: {{line.name}}</p>
-                    <p>{{line.description}}</p>
-                </li>
-            </ul>
-        </div>
+        <ul class="list-group">
+            <li class="list-group-item"
+                ng-repeat="line in $ctrl.lines"
+                ng-class="{active: hover}"
+                ng-mouseenter="hover = true"
+                ng-mouseleave="hover = false"
+                ng-click="$ctrl.onSelectedLine({lineName: line.name})">
+                <p>line: {{line.name}}</p>
+                <p>{{line.description}}</p>
+            </li>
+        </ul>
     </div>
 </div>

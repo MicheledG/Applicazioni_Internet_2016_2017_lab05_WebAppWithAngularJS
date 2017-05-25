@@ -10,5 +10,8 @@ angular
                 var self = this;
                 self.lines = DataProvider;
             }
-        ]
+        ],
+        bindings:{
+            onSelectedLine:'&'
+        }
     });

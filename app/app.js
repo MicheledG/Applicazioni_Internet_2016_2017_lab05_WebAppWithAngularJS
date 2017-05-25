@@ -14,10 +14,11 @@ app.config(function ($routeProvider, $locationProvider) {
 });
 
 app.controller('MainCtrl', function () {
-    /*
-     return {
-     };
-     */
+    var self = this;
+    self.selectedLine = '';
+    self.setSelectedLine = function(lineName){
+        self.selectedLine = lineName;
+    }
 });
 
 app.directive('myDirective', function () {
