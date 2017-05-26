@@ -2,12 +2,12 @@ var app = angular.module('App', ['ngRoute', 'ngResource', 'linesList', 'ui-leafl
 
 app.config(function ($routeProvider, $locationProvider) {
     $routeProvider
-        .when('/', {
+        .when('/lines', {
             templateUrl: 'main.html',
             controller: 'MainCtrl',
             controllerAs: 'ctrl'
         })
-        .otherwise({ redirectTo: "/" });
+        .otherwise({ redirectTo: "/lines" });
 
     // configure html5 to get links working on jsfiddle
     // $locationProvider.html5Mode(true);
