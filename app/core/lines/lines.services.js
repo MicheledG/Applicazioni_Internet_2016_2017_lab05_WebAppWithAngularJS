@@ -6976,4 +6976,27 @@ angular
             return stops;
         }
 
+        this.getLineMarkers = function (lineName) {
+            var markers = [];
+            var stops = this.getLineStops(lineName);
+
+            for (var i = 0; i < stops.length; i++) {
+                var marker = {
+                    lat: 0,
+                    lng: 0,
+                    message: ""
+                };
+                marker.lat = stops[i].latLng[0];
+                marker.lng = stops[i].latLng[1];
+                marker.message= ""+stops[i].id+" - "+stops[i].name;
+                for (var j=0; j<stops[i].lines.length; j++) {
+                    marker.message+=" <a href='#!/lines/"+stops[i].lines[j]+"'>"+stops[i].lines[j]+"</a>";
+                }
+                // markers.message+=" - ";
+                // markers.message+= stops[i].name;
+                markers.push(marker);
+            }
+            return markers;
+        };
+
     }]);

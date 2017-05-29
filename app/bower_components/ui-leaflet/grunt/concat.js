@@ -47,7 +47,7 @@ module.exports = function (grunt, options) {
                 banner: '(function (angular) {\n',
                 footer: '})(window.angular);'
             },
-            src: ['website/src/js/app.js', 'website/src/js/**/*.js'],
+            src: ['website/src/js/app.config.js', 'website/src/js/**/*.js'],
             dest: 'website/dist/js/<%= pkg.name %>-webpage.js',
         }
     };

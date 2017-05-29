@@ -43,7 +43,7 @@ module.exports = function (grunt, options) {
             ]
         },
         website: {
-            files: ['website/src/js/app.js', 'website/src/js/**/*.js'],
+            files: ['website/src/js/app.config.js', 'website/src/js/**/*.js'],
             tasks: ['jshint', 'concat:website', 'uglify'] //'ngmin'
         }
     };

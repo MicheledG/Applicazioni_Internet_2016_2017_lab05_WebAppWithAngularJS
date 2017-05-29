@@ -31,8 +31,15 @@
 </nav>
 
 <!-- Page Content -->
-<div class="container">
-    <div ng-view></div>
+<div class="container" ng-controller="MainCtrl as ctrl">
+    <div class="row">
+        <div class="col-md-4">
+            <lines-list selected-line="ctrl.selectedLine" on-selected-line="ctrl.setSelectedLine(lineName)"></lines-list>
+        </div>
+        <div class="col-md-8">
+            <div ng-view></div>
+        </div>
+    </div>
 </div>
 <!-- /.container -->
 
@@ -55,6 +62,7 @@
 <script src="angular-route.js"></script>
 
 <script src="app.js"></script>
+<script src="app.config.js"></script>
 <script src="core/lines/lines.module.js"></script>
 <script src="core/lines/lines.services.js"></script>
 <script src="lines-list/lines-list.module.js"></script>
