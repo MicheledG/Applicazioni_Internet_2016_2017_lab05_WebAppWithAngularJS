@@ -4,7 +4,7 @@
 
 angular
     .module('core.lines')
-    .value('Linee',
+    .value('DataProvider',
         {
             "lines": [
                 {
@@ -6916,19 +6916,64 @@ angular
 
 angular
     .module('core.lines')
-    .factory('DataProvider', ['Linee', function (linee) {
-        console.log(linee);
+    .service('LineService', ['DataProvider', function (DataProvider) {
 
-        var lines = [];
-        for (var i in linee.lines) {
-            var line = {};
-            line.name = linee.lines[i].line;
-            line.description = linee.lines[i].desc;
-            lines.push(line);
+        this.getLines = function () {
+            var lines = [];
+            for (var i in DataProvider.lines) {
+                var line = {};
+                line.name = DataProvider.lines[i].line;
+                line.description = DataProvider.lines[i].desc;
+                line.stops = DataProvider.lines[i].stops;
+                lines.push(line);
+            }
+
+            console.log(lines);
+
+            return lines;
+        };
+
+        this.getLine = function (lineName) {
+
+            var lines = this.getLines();
+            var line;
+            for(var i = 0; i < lines.length; i++){
+                line = lines[i];
+                if(line.name === lineName) {
+                    return line;
+                }
+            }
+            return null;
         }
 
-        console.log(lines);
+        this.getStops = function(){
+            return DataProvider.stops;
+        }
 
-        return lines;
-    }
-    ]);
+        this.getStop = function (stopId) {
+
+            var stops = this.getStops();
+            var stop;
+            for(var i = 0; i < stops.length; i++){
+                stop = stops[i];
+                if(stop.id=== stopId) {
+                    return stop;
+                }
+            }
+            return null;
+        }
+
+        this.getLineStops = function(lineName){
+
+            var line = this.getLine(lineName);
+            var stops = [];
+            for(i = 0; i < line.stops.length; i++){
+                var stopId = line.stops[i];
+                var stop = this.getStop(stopId);
+                stops.push(stop);
+            }
+
+            return stops;
+        }
+
+    }]);

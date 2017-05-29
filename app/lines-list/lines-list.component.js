@@ -5,14 +5,15 @@ angular
     .module('linesList')
     .component('linesList', {
         templateUrl: 'lines-list/lines-list.template.html',
-        controller: ['DataProvider',
-            function (DataProvider) {
+        controller: ['LineService',
+            function (LineService) {
                 var self = this;
                 self.selectedLine = '';
-                self.lines = DataProvider;
+                self.lines = LineService.getLines();
                 self.selectLine = function (lineName){
                     self.selectedLine = lineName;
                     self.onSelectedLine({lineName: lineName});
+                    console.log(LineService.getLineStops(lineName));
                 }
             }
         ],
