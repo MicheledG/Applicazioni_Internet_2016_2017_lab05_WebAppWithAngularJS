@@ -39,6 +39,7 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                     self.stopsToList.push(stopToList);
                 }
                 self.markers = LineService.getLineMarkers(self.line.name); //since the parent is the owner of the map
+                self.routes = LineService.getLineRoutes(self.line.name);
                 $scope.$parent.hookOnSelectedLine(self.line.name);   //to enlight (on the line list) the line which is showed in the map
             }else{
                 $location.path('/lines');
