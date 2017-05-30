@@ -1,11 +1,11 @@
 <div class="container-fluid">
     <div class="row">
         <h2>Line {{ctrl.line.name}} Details:</h2>
-        <leaflet width="100%" height="480px" lf-center="ctrl.mapCenter" markers="ctrl.markers" geojson="ctrl.routes"></leaflet>
+        <leaflet width="100%" height="480px" lf-center="ctrl.mapCenter" markers="ctrl.markers" geojson="ctrl.routes" bounds="ctrl.bounds"></leaflet>
 
         <h2>Stops:</h2>
         <div class="list-group">
-            <li class="list-group-item" ng-repeat="stopToList in ctrl.stopsToList">{{stopToList.stop.id}} - {{stopToList.stop.name}}</li>
+            <li class="list-group-item" ng-repeat="stopToList in ctrl.stopsToShow">{{stopToList.stop.id}} - {{stopToList.stop.name}}</li>
         </div>
     </div>
 </div>

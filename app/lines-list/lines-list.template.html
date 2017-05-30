@@ -8,7 +8,7 @@
     <div class="row">
         <ul class="list-group">
             <li class="list-group-item"
-                ng-repeat="line in $ctrl.lines | filter:$ctrl.query"
+                ng-repeat="line in $ctrl.lines | filter:$ctrl.query | orderBy:'name'"
                 ng-class="{active: line.name == $ctrl.selectedLine}"
                 ng-click="$ctrl.selectLine(line.name)">
                 <h4>line: {{line.name}}</h4>

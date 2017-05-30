@@ -18,28 +18,63 @@ app.controller('MainCtrl',['$scope', '$routeParams','$location', function ($scop
 
 }]);
 
-app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService',
-        function ($scope, $routeParams, $location, LineService) {
+app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService', 'leafletBoundsHelpers',
+        function ($scope, $routeParams, $location, LineService, leafletBoundsHelpers) {
+
             var self = this;
-            self.mapCenter = {
-                lat: 45.06,
-                lng: 7.68,
-                zoom: 13
-            }
+
             self.line = LineService.getLine($routeParams.lineName);
             //check if the choosen line exists
             if (self.line) {
+
                 var stops = LineService.getLineStops(self.line.name);
-                self.stopsToList = [];
-                //make difference between stops
+                self.stopsToShow = [];
+                //set sequence number of each stop
                 for(var i = 0; i < stops.length; i++){
-                    var stopToList = {};
-                    stopToList.sequenceNumber = i +1;
-                    stopToList.stop = stops[i];
-                    self.stopsToList.push(stopToList);
+                    var stopToShow = {};
+                    stopToShow.sequenceNumber = i +1;
+                    stopToShow.stop = stops[i];
+                    self.stopsToShow.push(stopToShow);
                 }
+
+
+                self.mapCenter = {};/*{
+                    lat: 45.06,
+                    lng: 7.68,
+                    zoom: 13
+                }*/
                 self.markers = LineService.getLineMarkers(self.line.name); //since the parent is the owner of the map
                 self.routes = LineService.getLineRoutes(self.line.name);
+
+                var northeastBound;
+                var southwestBound;
+                var tmpNorthBound = [-90.0, 180.0];
+                var tmpSouthBound = [90.0, -180.0];
+                for(var i = 0; i < self.markers.length; i++){
+                    var lat = self.markers[i].lat;
+                    var lng = self.markers[i].lng;
+                    if(lat > tmpNorthBound[0]){
+                        tmpNorthBound[0] = lat;
+                    }
+                    if(lng < tmpNorthBound[1]){
+                        tmpNorthBound[1] = lng;
+                    }
+                    if(lat < tmpSouthBound[0]){
+                        tmpSouthBound[0] = lat;
+                    }
+                    if(lng > tmpSouthBound[1]){
+                        tmpSouthBound[1] = lng;
+                    }
+                }
+
+                northeastBound= tmpNorthBound;
+                southwestBound = tmpSouthBound;
+
+                self.bounds = leafletBoundsHelpers.createBoundsFromArray([
+                        northeastBound,
+                        southwestBound
+                    ]);
+
                 $scope.$parent.hookOnSelectedLine(self.line.name);   //to enlight (on the line list) the line which is showed in the map
             }else{
                 $location.path('/lines');
