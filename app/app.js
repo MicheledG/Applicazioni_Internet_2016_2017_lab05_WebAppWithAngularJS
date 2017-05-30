@@ -46,6 +46,7 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                 self.markers = LineService.getLineMarkers(self.line.name); //since the parent is the owner of the map
                 self.routes = LineService.getLineRoutes(self.line.name);
 
+                //compute the northeast and the southwest bounds of the map
                 var northeastBound;
                 var southwestBound;
                 var tmpNorthBound = [-90.0, 180.0];

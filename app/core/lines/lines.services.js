@@ -76,9 +76,11 @@ angular
                     };
                     marker.lat = stops[i].latLng[0];
                     marker.lng = stops[i].latLng[1];
-                    marker.message= ""+stops[i].id+" - "+stops[i].name;
+                    marker.message = "id: "+ stops[i].id + "<br>";
+                    marker.message += "name: "+stops[i].name +"<br>";
+                    marker.message += "lines:<br>";
                     for (var j=0; j<stops[i].lines.length; j++) {
-                        marker.message+=" <a href='#!/lines/"+stops[i].lines[j]+"'>"+stops[i].lines[j]+"</a>";
+                        marker.message+="- <a href='#!/lines/"+stops[i].lines[j]+"'>"+stops[i].lines[j]+"</a><br>";
                     }
                     // markers.message+=" - ";
                     // markers.message+= stops[i].name;
