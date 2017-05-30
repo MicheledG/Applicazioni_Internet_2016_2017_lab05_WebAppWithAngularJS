@@ -4,7 +4,9 @@ angular
         function ($routeProvider, $locationProvider) {
             $routeProvider
             .when('/lines', {
-                template: ''
+                templateUrl: 'line.html',
+                controller: 'LineCtrl',
+                controllerAs: 'ctrl'
             })
             .when('/lines/:lineName', {
                 templateUrl: 'line.html',

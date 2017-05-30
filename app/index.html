@@ -31,15 +31,8 @@
 </nav>
 
 <!-- Page Content -->
-<div class="container" ng-controller="MainCtrl as ctrl">
-    <div class="row">
-        <div class="col-md-4">
-            <lines-list selected-line="ctrl.selectedLine" on-selected-line="ctrl.setSelectedLine(lineName)"></lines-list>
-        </div>
-        <div class="col-md-8">
-            <div ng-view></div>
-        </div>
-    </div>
+<div class="container">
+    <div ng-view></div>
 </div>
 <!-- /.container -->
 

@@ -3,30 +3,19 @@
  */
 var app = angular.module('App', ['ngRoute', 'ngResource', 'linesList', 'ui-leaflet']);
 
-app.controller('MainCtrl',['$scope', '$routeParams','$location', function ($scope, $routeParams, $location) {
-    var self = this;
-    self.selectedLine = '';
-
-    self.setSelectedLine = function(lineName){
-        self.selectedLine = lineName;
-        $location.path('/lines/'+lineName);
-    }
-
-    $scope.hookOnSelectedLine = function(lineName){
-        self.selectedLine = lineName;
-    }
-
-}]);
-
 app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService', 'leafletBoundsHelpers',
         function ($scope, $routeParams, $location, LineService, leafletBoundsHelpers) {
 
             var self = this;
+            self.selectedLineName = '';
+            self.setSelectedLineName = function(lineName){
+                self.selectedLineName = lineName;
+                $location.path('/lines/'+lineName);
+            };
 
             self.line = LineService.getLine($routeParams.lineName);
-            //check if the choosen line exists
-            if (self.line) {
-
+            if(self.line){
+                self.selectedLineName = self.line.name;
                 var stops = LineService.getLineStops(self.line.name);
                 self.stopsToShow = [];
                 //set sequence number of each stop
@@ -37,12 +26,11 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                     self.stopsToShow.push(stopToShow);
                 }
 
-
                 self.mapCenter = {};/*{
-                    lat: 45.06,
-                    lng: 7.68,
-                    zoom: 13
-                }*/
+                 lat: 45.06,
+                 lng: 7.68,
+                 zoom: 13
+                 }*/
                 self.markers = LineService.getLineMarkers(self.line.name); //since the parent is the owner of the map
                 self.routes = LineService.getLineRoutes(self.line.name);
 
@@ -72,20 +60,12 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                 southwestBound = tmpSouthBound;
 
                 self.bounds = leafletBoundsHelpers.createBoundsFromArray([
-                        northeastBound,
-                        southwestBound
-                    ]);
-
-                $scope.$parent.hookOnSelectedLine(self.line.name);   //to enlight (on the line list) the line which is showed in the map
-            }else{
+                    northeastBound,
+                    southwestBound
+                ]);
+            } else if($routeParams.lineName){
+                //there is a line name in the url but it is incorrect => redirect
                 $location.path('/lines');
             }
         }
 ]);
-
-app.directive('myDirective', function () {
-    /*
-     return {
-     };
-     */
-});
