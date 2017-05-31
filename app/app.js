@@ -13,6 +13,12 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                 $location.path('/lines/'+lineName);
             };
 
+            self.mapCenter = {
+                lat: 45.06,
+                lng: 7.68,
+                zoom: 13
+            };
+
             self.line = LineService.getLine($routeParams.lineName);
             if(self.line){
                 self.selectedLineName = self.line.name;
@@ -25,12 +31,7 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                     stopToShow.stop = stops[i];
                     self.stopsToShow.push(stopToShow);
                 }
-
-                self.mapCenter = {};/*{
-                 lat: 45.06,
-                 lng: 7.68,
-                 zoom: 13
-                 }*/
+                self.mapCenter = {};
                 self.markers = LineService.getLineMarkers(self.line.name); //since the parent is the owner of the map
                 self.routes = LineService.getLineRoutes(self.line.name);
 
@@ -76,6 +77,12 @@ app.controller('RouteCtrl', ['LineService', 'leafletBoundsHelpers',
         var self = this;
         self.startAddress = '';
         self.arriveAddress = '';
+        self.mapCenter = {
+            lat: 45.06,
+            lng: 7.68,
+            zoom: 13
+        };
+
         self.resetRoute = function(){
             self.startAddress = '';
             self.arriveAddress = '';
