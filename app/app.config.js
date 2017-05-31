@@ -13,6 +13,11 @@ angular
                 controller: 'LineCtrl',
                 controllerAs: 'ctrl'
             })
+            .when('/computeRoute', {
+                templateUrl: 'route.html',
+                controller: 'RouteCtrl',
+                controllerAs: 'ctrl'
+            })
             .otherwise({ redirectTo: "/lines" });
 
             // configure html5 to get links working on jsfiddle

@@ -39,7 +39,7 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                 var southwestBound;
                 var tmpNorthBound = [-90.0, 180.0];
                 var tmpSouthBound = [90.0, -180.0];
-                for(var i = 0; i < self.markers.length; i++){
+                for(i = 0; i < self.markers.length; i++){
                     var lat = self.markers[i].lat;
                     var lng = self.markers[i].lng;
                     if(lat > tmpNorthBound[0]){
@@ -69,3 +69,78 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
             }
         }
 ]);
+
+app.controller('RouteCtrl', ['LineService', 'leafletBoundsHelpers',
+    function (LineService, leafletBoundsHelpers) {
+
+        var self = this;
+        self.startAddress = '';
+        self.arriveAddress = '';
+        self.resetRoute = function(){
+            self.startAddress = '';
+            self.arriveAddress = '';
+            self.markers = null;
+            self.routeGeoJson = null;
+            self.routeDetails = null;
+            self.bounds = null;
+        };
+        self.computeRoute = function(){
+            if(self.startAddress !== '' && self.arriveAddress !== ''){
+                self.markers = LineService.getLineMarkers('METRO');
+                self.routeGeoJson = LineService.getLineRoutes('METRO');
+                self.routeDetails = [];
+
+                var firstRouteDetail = {};
+                firstRouteDetail.from =  self.startAddress.toUpperCase();
+                firstRouteDetail.to = 'Lat: ' + self.markers[0].lat + ' - Lng: ' + self.markers[0].lng;
+                firstRouteDetail.description = 'reach the first stop';
+                self.routeDetails.push(firstRouteDetail);
+
+                var middleRouteDetail = {};
+                middleRouteDetail.from = 'Lat: ' + self.markers[0].lat + ' - Lng: ' + self.markers[0].lng;
+                middleRouteDetail.to =  'Lat: ' + self.markers[self.markers.length-1].lat + ' - Lng: ' + self.markers[self.markers.length-1].lng;
+                middleRouteDetail.description = 'Take line METRO for 21 stops';
+                self.routeDetails.push(middleRouteDetail);
+
+                var lastRouteDetail = {};
+                lastRouteDetail.from =  'Lat: ' + self.markers[self.markers.length-1].lat + ' - Lng: ' + self.markers[self.markers.length-1].lng;
+                lastRouteDetail.to = self.arriveAddress.toUpperCase();
+                lastRouteDetail.description = 'reach the arrive point';
+                self.routeDetails.push(lastRouteDetail);
+
+                self.mapCenter = {};
+
+                //compute the northeast and the southwest bounds of the map
+                var northeastBound;
+                var southwestBound;
+                var tmpNorthBound = [-90.0, 180.0];
+                var tmpSouthBound = [90.0, -180.0];
+                for(var i = 0; i < self.markers.length; i++){
+                    var lat = self.markers[i].lat;
+                    var lng = self.markers[i].lng;
+                    if(lat > tmpNorthBound[0]){
+                        tmpNorthBound[0] = lat;
+                    }
+                    if(lng < tmpNorthBound[1]){
+                        tmpNorthBound[1] = lng;
+                    }
+                    if(lat < tmpSouthBound[0]){
+                        tmpSouthBound[0] = lat;
+                    }
+                    if(lng > tmpSouthBound[1]){
+                        tmpSouthBound[1] = lng;
+                    }
+                }
+
+                northeastBound= tmpNorthBound;
+                southwestBound = tmpSouthBound;
+
+                self.bounds = leafletBoundsHelpers.createBoundsFromArray([
+                    northeastBound,
+                    southwestBound
+                ]);
+            }
+        };
+    }
+]);
+
