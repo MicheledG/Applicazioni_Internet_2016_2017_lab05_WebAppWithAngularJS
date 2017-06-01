@@ -155,42 +155,55 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
                     }
                 };
 
-                //self.mapCenter = {};
                 //compute the northeast and the southwest bounds of the map
-                // var northeastBound;
-                // var southwestBound;
-                // var tmpNorthBound = [-90.0, 180.0];
-                // var tmpSouthBound = [90.0, -180.0];
-                // for(var i = 0; i < self.markers.length; i++){
-                //     var lat = self.markers[i].lat;
-                //     var lng = self.markers[i].lng;
-                //     if(lat > tmpNorthBound[0]){
-                //         tmpNorthBound[0] = lat;
-                //     }
-                //     if(lng < tmpNorthBound[1]){
-                //         tmpNorthBound[1] = lng;
-                //     }
-                //     if(lat < tmpSouthBound[0]){
-                //         tmpSouthBound[0] = lat;
-                //     }
-                //     if(lng > tmpSouthBound[1]){
-                //         tmpSouthBound[1] = lng;
-                //     }
-                // }
-                //
-                // northeastBound= tmpNorthBound;
-                // southwestBound = tmpSouthBound;
+                var northeastBound;
+                var southwestBound;
+                var tmpNorthBound = [-90.0, 180.0];
+                var tmpSouthBound = [90.0, -180.0];
 
-                // self.bounds = leafletBoundsHelpers.createBoundsFromArray([
-                //     northeastBound,
-                //     southwestBound
-                // ]);
+                //gather all the coordinates of the geojson
+                var routeFeatures = self.routeGeoJson.data.features;
+                var allRouteGeoJsonCoordinates = [];
+                for(var i = 0; i < routeFeatures.length; i++){
+                    var geometry = routeFeatures[i].geometry;
+                    if(geometry.type === 'LineString'){
+                        for (var j = 0; j < geometry.coordinates.length; j++){
+                            allRouteGeoJsonCoordinates.push(geometry.coordinates[j]);
+                        }
+                    }
+                }
+
+                //analyze all the coordinates
+                for(i = 0; i < allRouteGeoJsonCoordinates.length; i++){
+                    var lat = allRouteGeoJsonCoordinates[i][1]; //latitude
+                    var lng = allRouteGeoJsonCoordinates[i][0]; //longitude
+                    if(lat > tmpNorthBound[0]){
+                        tmpNorthBound[0] = lat;
+                    }
+                    if(lng < tmpNorthBound[1]){
+                        tmpNorthBound[1] = lng;
+                    }
+                    if(lat < tmpSouthBound[0]){
+                        tmpSouthBound[0] = lat;
+                    }
+                    if(lng > tmpSouthBound[1]){
+                        tmpSouthBound[1] = lng;
+                    }
+                }
+
+                northeastBound= tmpNorthBound;
+                southwestBound = tmpSouthBound;
+
+                self.mapCenter = {};
+                self.bounds = leafletBoundsHelpers.createBoundsFromArray([
+                    northeastBound,
+                    southwestBound
+                ]);
 
                 //handle the data to show in the details table
                 self.routeDetailHeaders = ['from', 'to', 'description'];
                 self.routeDetails = [];
 
-                var routeFeatures = self.routeGeoJson.data.features;
                 routeFeatures.sort(function(a, b){
                     var sequenceNumberA = a.properties.sequenceNumber;
                     var sequenceNumberB = b.properties.sequenceNumber;
@@ -205,7 +218,7 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
                     }
                 });
 
-                for(var i = 0; i < routeFeatures.length; i++){
+                for(i = 0; i < routeFeatures.length; i++){
                     var routeFeature = routeFeatures[i];
                     if(routeFeature.geometry.type === 'LineString'){
                         var routeDetail = [];
