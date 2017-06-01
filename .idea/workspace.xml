@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fa62f795-265f-47cf-b4d9-cc7f64413848" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/core/routes/routes.module.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/core/routes/routes.services.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.js" afterPath="$PROJECT_DIR$/app/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/index.html" afterPath="$PROJECT_DIR$/app/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/route.html" afterPath="$PROJECT_DIR$/app/route.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -74,10 +70,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="routes.services.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="routes.services.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/core/routes/routes.services.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1071">
+            <state relative-caret-position="0">
               <caret line="65" column="46" lean-forward="true" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
               <folding>
                 <element signature="e#0#42#0" expanded="false" />
@@ -108,11 +104,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="85" column="4" lean-forward="false" selection-start-line="85" selection-start-column="4" selection-end-line="85" selection-end-column="4" />
+            <state relative-caret-position="374">
+              <caret line="192" column="25" lean-forward="false" selection-start-line="192" selection-start-column="25" selection-end-line="192" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -462,7 +458,7 @@
       <workItem from="1496156488406" duration="5713000" />
       <workItem from="1496217688334" duration="5681000" />
       <workItem from="1496245019334" duration="2213000" />
-      <workItem from="1496247276587" duration="20732000" />
+      <workItem from="1496247276587" duration="21921000" />
     </task>
     <task id="LOCAL-00001" summary="updated lines-list template&#10;&#10;added title in template">
       <created>1495712445350</created>
@@ -499,11 +495,18 @@
       <option name="project" value="LOCAL" />
       <updated>1496312674093</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added fake RouteService returning a fake min path">
+      <created>1496331701798</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1496331701798</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="84674000" />
+    <option name="totallyTimeSpent" value="85863000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -565,7 +568,8 @@
     <MESSAGE value="Updated the map behavior on Lines and ComputeRoute" />
     <MESSAGE value="Introduced &quot;details-table&quot; component" />
     <MESSAGE value="Updating style" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updating style" />
+    <MESSAGE value="Added fake RouteService returning a fake min path" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added fake RouteService returning a fake min path" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -955,21 +959,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="85" column="4" lean-forward="false" selection-start-line="85" selection-start-column="4" selection-end-line="85" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/core/routes/routes.services.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1071">
+        <state relative-caret-position="0">
           <caret line="65" column="46" lean-forward="true" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
           <folding>
             <element signature="e#0#42#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="192" column="25" lean-forward="false" selection-start-line="192" selection-start-column="25" selection-end-line="192" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -158,10 +158,25 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
                 self.routeDetailHeaders = ['from', 'to', 'description'];
                 self.routeDetails = [];
 
-                for(var i = 0; i < self.routeGeoJson.data.features.length; i++){
-                    var routeDetail = [];
-                    var routeFeature = self.routeGeoJson.data.features[i];
+                var routeFeatures = self.routeGeoJson.data.features;
+                routeFeatures.sort(function(a, b){
+                    var sequenceNumberA = a.properties.sequenceNumber;
+                    var sequenceNumberB = b.properties.sequenceNumber;
+                    if(sequenceNumberA < sequenceNumberB){
+                        return -1;
+                    }
+                    else if(sequenceNumberA === sequenceNumberB){
+                        return 0;
+                    }
+                    else{
+                        return 1;
+                    }
+                });
+
+                for(var i = 0; i < routeFeatures.length; i++){
+                    var routeFeature = routeFeatures[i];
                     if(routeFeature.geometry.type == 'LineString'){
+                        var routeDetail = [];
                         if(routeFeature.properties){
                             var properties = routeFeature.properties;
                             routeDetail.push(properties.from);
@@ -176,9 +191,14 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
                             }
                             routeDetail.push(description);
                         }
+                        self.routeDetails.push(routeDetail);
                     }
-                    self.routeDetails.push(routeDetail);
                 }
+
+                //remove the latitude and the longitude of the first and the last route detail to show
+                //YES, I KNOW: IT'S A MESS -> NEEDS TO CHANGE DETAILS FROM ARRAYS TO OBJECTS
+                self.routeDetails[0][0] = self.fromAddress; //this change "from" information of first detail
+                self.routeDetails[self.routeDetails.length-1][1] = self.toAddress; //this change "to" information of last detail
 
                 //self.mapCenter = {};
                 //compute the northeast and the southwest bounds of the map
