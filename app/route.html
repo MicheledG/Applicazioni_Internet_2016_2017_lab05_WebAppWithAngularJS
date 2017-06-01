@@ -4,23 +4,23 @@
         <form class="well">
             <div class="form-group">
                 <label for="from">From:</label>
-                <input type="text" class="form-control" id="from" placeholder="Address" ng-model="ctrl.startAddress" required>
+                <input type="text" class="form-control" id="from" placeholder="Address here..." ng-model="ctrl.fromAddress" required>
             </div>
             <div class="form-group">
                 <label for="to">To:</label>
-                <input type="text" class="form-control" id="to" placeholder="Address" ng-model="ctrl.arriveAddress" required>
+                <input type="text" class="form-control" id="to" placeholder="Address here..." ng-model="ctrl.toAddress" required>
             </div>
             <button type="button" class="btn btn-default" ng-click="ctrl.resetRoute()">Cancel</button>
             <button type="submit" class="btn btn-default" ng-click="ctrl.computeRoute()">Compute</button>
         </form>
+        <div ng-if="ctrl.routeDetails">
+            <details-table table-title="'Route Details:'" table-headers="ctrl.routeDetailHeaders" table-details="ctrl.routeDetails"></details-table>
+        </div>
     </div>
     <div class="col-md-8">
 
         <h2>Route:</h2>
-        <leaflet width="100%" height="480px" lf-center="ctrl.mapCenter" markers="ctrl.markers" geojson="ctrl.routeGeoJson" bounds="ctrl.bounds"></leaflet>
+        <leaflet width="100%" height="750px" lf-center="ctrl.mapCenter" markers="ctrl.markers" geojson="ctrl.routeGeoJson" bounds="ctrl.bounds"></leaflet>
 
-        <div ng-if="ctrl.routeDetails">
-            <details-table table-title="'Route Details:'" table-headers="ctrl.routeDetailHeaders" table-details="ctrl.routeDetails"></details-table>
-        </div>
     </div>
 </div>

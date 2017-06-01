@@ -3,10 +3,17 @@
  */
 var app = angular.module('App', ['ngRoute', 'ngResource', 'linesList', 'detailsTable', 'ui-leaflet']);
 
+/*
+    Handle lines and lines/:lineName views
+    1) lines/ => show the list of the lines and the map centered on Turin (clear unused objects);
+    2) lines/:lineName => show on map the route of the selected line and in a table below the details of each
+    line stop
+ */
 app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService', 'leafletBoundsHelpers',
         function ($scope, $routeParams, $location, LineService, leafletBoundsHelpers) {
 
             var self = this;
+            //1) handle generic lines/ view
             self.selectedLineName = '';
             self.setSelectedLineName = function(lineName){
                 self.selectedLineName = lineName;
@@ -19,6 +26,7 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                 zoom: 13
             };
 
+            //2) handle lines/:lineName view
             self.line = LineService.getLine($routeParams.lineName);
             if(self.line){
                 self.selectedLineName = self.line.name;
@@ -73,12 +81,18 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
         }
 ]);
 
+
+/*
+ Handle computeRoute and computeRoute view
+ 1) computeRoute/ => show the form to compute
+ line stop
+ */
 app.controller('RouteCtrl', ['LineService', 'leafletBoundsHelpers',
     function (LineService, leafletBoundsHelpers) {
 
         var self = this;
-        self.startAddress = '';
-        self.arriveAddress = '';
+        self.fromAddress = '';
+        self.toAddress = '';
         self.mapCenter = {
             lat: 45.06,
             lng: 7.68,
@@ -86,22 +100,23 @@ app.controller('RouteCtrl', ['LineService', 'leafletBoundsHelpers',
         };
 
         self.resetRoute = function(){
-            self.startAddress = '';
-            self.arriveAddress = '';
+            self.fromAddress = '';
+            self.toAddress = '';
             self.markers = null;
             self.routeGeoJson = null;
             self.routeDetails = null;
             self.bounds = null;
         };
+
         self.computeRoute = function(){
-            if(self.startAddress !== '' && self.arriveAddress !== ''){
+            if(self.fromAddress !== '' && self.toAddress !== ''){
                 self.markers = LineService.getLineMarkers('METRO');
                 self.routeGeoJson = LineService.getLineRoutes('METRO');
                 self.routeDetailHeaders = ['from', 'to', 'description'];
                 self.routeDetails = [];
 
                 var firstRouteDetail = [];
-                firstRouteDetail.push(self.startAddress.toUpperCase());
+                firstRouteDetail.push(self.fromAddress.toUpperCase());
                 firstRouteDetail.push('Lat: ' + self.markers[0].lat + ' - Lng: ' + self.markers[0].lng);
                 firstRouteDetail.push('reach the first stop');
                 self.routeDetails.push(firstRouteDetail);
@@ -114,7 +129,7 @@ app.controller('RouteCtrl', ['LineService', 'leafletBoundsHelpers',
 
                 var lastRouteDetail = [];
                 lastRouteDetail.push( 'Lat: ' + self.markers[self.markers.length-1].lat + ' - Lng: ' + self.markers[self.markers.length-1].lng);
-                lastRouteDetail.push(self.arriveAddress.toUpperCase());
+                lastRouteDetail.push(self.toAddress.toUpperCase());
                 lastRouteDetail.push('reach the arrive point');
                 self.routeDetails.push(lastRouteDetail);
 

@@ -1,7 +1,13 @@
+lines-list input.form-control{
+    height: 34px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
 lines-list ul.list-group {
     border: thin solid lightgray;
     border-radius: 5px;
-    height: 700px;
+    height: 710px;
     overflow-y: scroll;
 }
 
