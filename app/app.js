@@ -123,10 +123,11 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
                 };
                 self.routeGeoJson.onEachFeature = function(feature, layer){
                     var popupContent = null;
+                    var properties;
                     //distinguish the possible popup
                     if(feature.geometry.type === 'Point'){
                         if(feature.properties){
-                            var properties = feature.properties;
+                            properties = feature.properties;
                             if(properties.first){
                                 popupContent = "Starting point!"
                             }
@@ -135,9 +136,9 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
                             }
                         }
                     }
-                    else if(feature.geometry.type == 'LineString'){
+                    else if(feature.geometry.type === 'LineString'){
                         if(feature.properties){
-                            var properties = feature.properties;
+                            properties = feature.properties;
                             if(properties.type === 'foot'){
                                 popupContent = "Walk for "+properties.distance+"m";
                             }
@@ -153,52 +154,6 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
                         layer.bindPopup(popupContent);
                     }
                 };
-
-                //handle the data to show in the details table
-                self.routeDetailHeaders = ['from', 'to', 'description'];
-                self.routeDetails = [];
-
-                var routeFeatures = self.routeGeoJson.data.features;
-                routeFeatures.sort(function(a, b){
-                    var sequenceNumberA = a.properties.sequenceNumber;
-                    var sequenceNumberB = b.properties.sequenceNumber;
-                    if(sequenceNumberA < sequenceNumberB){
-                        return -1;
-                    }
-                    else if(sequenceNumberA === sequenceNumberB){
-                        return 0;
-                    }
-                    else{
-                        return 1;
-                    }
-                });
-
-                for(var i = 0; i < routeFeatures.length; i++){
-                    var routeFeature = routeFeatures[i];
-                    if(routeFeature.geometry.type == 'LineString'){
-                        var routeDetail = [];
-                        if(routeFeature.properties){
-                            var properties = routeFeature.properties;
-                            routeDetail.push(properties.from);
-                            routeDetail.push(properties.to);
-                            var description;
-                            if(properties.type === 'foot'){
-                                description = "Walk for "+properties.distance+"m";
-                            }
-                            else{
-                                description = "Take line "+properties.line;
-                                description += " for "+properties.stops+"stops";
-                            }
-                            routeDetail.push(description);
-                        }
-                        self.routeDetails.push(routeDetail);
-                    }
-                }
-
-                //remove the latitude and the longitude of the first and the last route detail to show
-                //YES, I KNOW: IT'S A MESS -> NEEDS TO CHANGE DETAILS FROM ARRAYS TO OBJECTS
-                self.routeDetails[0][0] = self.fromAddress; //this change "from" information of first detail
-                self.routeDetails[self.routeDetails.length-1][1] = self.toAddress; //this change "to" information of last detail
 
                 //self.mapCenter = {};
                 //compute the northeast and the southwest bounds of the map
@@ -230,6 +185,55 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
                 //     northeastBound,
                 //     southwestBound
                 // ]);
+
+                //handle the data to show in the details table
+                self.routeDetailHeaders = ['from', 'to', 'description'];
+                self.routeDetails = [];
+
+                var routeFeatures = self.routeGeoJson.data.features;
+                routeFeatures.sort(function(a, b){
+                    var sequenceNumberA = a.properties.sequenceNumber;
+                    var sequenceNumberB = b.properties.sequenceNumber;
+                    if(sequenceNumberA < sequenceNumberB){
+                        return -1;
+                    }
+                    else if(sequenceNumberA === sequenceNumberB){
+                        return 0;
+                    }
+                    else{
+                        return 1;
+                    }
+                });
+
+                for(var i = 0; i < routeFeatures.length; i++){
+                    var routeFeature = routeFeatures[i];
+                    if(routeFeature.geometry.type === 'LineString'){
+                        var routeDetail = [];
+                        if(routeFeature.properties){
+                            var properties = routeFeature.properties;
+                            //add the "from" data -> first information of the detail
+                            routeDetail.push(properties.from);
+                            //add the "to" data -> second information of the detail
+                            routeDetail.push(properties.to);
+                            var description;
+                            if(properties.type === 'foot'){
+                                description = "Walk for "+properties.distance+"m";
+                            }
+                            else{
+                                description = "Take line "+properties.line;
+                                description += " for "+properties.stops+"stops";
+                            }
+                            //add the "description" data -> third information of the detail
+                            routeDetail.push(description);
+                        }
+                        self.routeDetails.push(routeDetail);
+                    }
+                }
+
+                //remove the latitude and the longitude of the first and the last route detail to show
+                //YES, I KNOW: IT'S A MESS -> NEEDS TO CHANGE DETAILS FROM ARRAYS TO OBJECTS
+                self.routeDetails[0][0] = self.fromAddress; //this change "from" information of first detail
+                self.routeDetails[self.routeDetails.length-1][1] = self.toAddress; //this change "to" information of last detail
             }
         };
     }
