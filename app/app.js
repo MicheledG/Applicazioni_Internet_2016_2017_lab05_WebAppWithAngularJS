@@ -1,7 +1,7 @@
 /**
  * Created by chief on 29/05/2017.
  */
-var app = angular.module('App', ['ngRoute', 'ngResource', 'linesList', 'detailsTable', 'ui-leaflet']);
+var app = angular.module('App', ['ngRoute', 'ngResource', 'core.routes' ,'linesList', 'detailsTable', 'ui-leaflet']);
 
 /*
     Handle lines and lines/:lineName views
@@ -83,12 +83,10 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
 
 
 /*
- Handle computeRoute and computeRoute view
- 1) computeRoute/ => show the form to compute
- line stop
+    Handle computeRoute view
  */
-app.controller('RouteCtrl', ['LineService', 'leafletBoundsHelpers',
-    function (LineService, leafletBoundsHelpers) {
+app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers',
+    function (LineService, RouteService, leafletBoundsHelpers) {
 
         var self = this;
         self.fromAddress = '';
@@ -110,60 +108,108 @@ app.controller('RouteCtrl', ['LineService', 'leafletBoundsHelpers',
 
         self.computeRoute = function(){
             if(self.fromAddress !== '' && self.toAddress !== ''){
-                self.markers = LineService.getLineMarkers('METRO');
-                self.routeGeoJson = LineService.getLineRoutes('METRO');
+
+                //handle the data to show on the map
+                self.routeGeoJson = {};
+                self.routeGeoJson.data = RouteService.getMinRoute(self.fromAddress, self.toAddress);
+                self.routeGeoJson.style = function(feature){
+                  if(feature.geometry.type === 'LineString') {
+                      if (feature.properties.type === 'foot') {
+                          return {
+                              color: "red"
+                          }
+                      }
+                  }
+                };
+                self.routeGeoJson.onEachFeature = function(feature, layer){
+                    var popupContent = null;
+                    //distinguish the possible popup
+                    if(feature.geometry.type === 'Point'){
+                        if(feature.properties){
+                            var properties = feature.properties;
+                            if(properties.first){
+                                popupContent = "Starting point!"
+                            }
+                            else if(properties.last){
+                                popupContent = "Arriving point!"
+                            }
+                        }
+                    }
+                    else if(feature.geometry.type == 'LineString'){
+                        if(feature.properties){
+                            var properties = feature.properties;
+                            if(properties.type === 'foot'){
+                                popupContent = "Walk for "+properties.distance+"m";
+                            }
+                            else{
+                                popupContent = "Line: "+properties.line+"<br>";
+                                popupContent += "Number of stops: "+properties.stops;
+                            }
+                        }
+                    }
+
+                    //if a popup content has been defined -> apply!
+                    if(popupContent){
+                        layer.bindPopup(popupContent);
+                    }
+                };
+
+                //handle the data to show in the details table
                 self.routeDetailHeaders = ['from', 'to', 'description'];
                 self.routeDetails = [];
 
-                var firstRouteDetail = [];
-                firstRouteDetail.push(self.fromAddress.toUpperCase());
-                firstRouteDetail.push('Lat: ' + self.markers[0].lat + ' - Lng: ' + self.markers[0].lng);
-                firstRouteDetail.push('reach the first stop');
-                self.routeDetails.push(firstRouteDetail);
-
-                var middleRouteDetail = [];
-                middleRouteDetail.push('Lat: ' + self.markers[0].lat + ' - Lng: ' + self.markers[0].lng);
-                middleRouteDetail.push('Lat: ' + self.markers[21].lat + ' - Lng: ' + self.markers[21].lng);
-                middleRouteDetail.push('Take line METRO for 21 stops');
-                self.routeDetails.push(middleRouteDetail);
-
-                var lastRouteDetail = [];
-                lastRouteDetail.push( 'Lat: ' + self.markers[self.markers.length-1].lat + ' - Lng: ' + self.markers[self.markers.length-1].lng);
-                lastRouteDetail.push(self.toAddress.toUpperCase());
-                lastRouteDetail.push('reach the arrive point');
-                self.routeDetails.push(lastRouteDetail);
-
-                self.mapCenter = {};
-
-                //compute the northeast and the southwest bounds of the map
-                var northeastBound;
-                var southwestBound;
-                var tmpNorthBound = [-90.0, 180.0];
-                var tmpSouthBound = [90.0, -180.0];
-                for(var i = 0; i < self.markers.length; i++){
-                    var lat = self.markers[i].lat;
-                    var lng = self.markers[i].lng;
-                    if(lat > tmpNorthBound[0]){
-                        tmpNorthBound[0] = lat;
+                for(var i = 0; i < self.routeGeoJson.data.features.length; i++){
+                    var routeDetail = [];
+                    var routeFeature = self.routeGeoJson.data.features[i];
+                    if(routeFeature.geometry.type == 'LineString'){
+                        if(routeFeature.properties){
+                            var properties = routeFeature.properties;
+                            routeDetail.push(properties.from);
+                            routeDetail.push(properties.to);
+                            var description;
+                            if(properties.type === 'foot'){
+                                description = "Walk for "+properties.distance+"m";
+                            }
+                            else{
+                                description = "Take line "+properties.line;
+                                description += " for "+properties.stops+"stops";
+                            }
+                            routeDetail.push(description);
+                        }
                     }
-                    if(lng < tmpNorthBound[1]){
-                        tmpNorthBound[1] = lng;
-                    }
-                    if(lat < tmpSouthBound[0]){
-                        tmpSouthBound[0] = lat;
-                    }
-                    if(lng > tmpSouthBound[1]){
-                        tmpSouthBound[1] = lng;
-                    }
+                    self.routeDetails.push(routeDetail);
                 }
 
-                northeastBound= tmpNorthBound;
-                southwestBound = tmpSouthBound;
+                //self.mapCenter = {};
+                //compute the northeast and the southwest bounds of the map
+                // var northeastBound;
+                // var southwestBound;
+                // var tmpNorthBound = [-90.0, 180.0];
+                // var tmpSouthBound = [90.0, -180.0];
+                // for(var i = 0; i < self.markers.length; i++){
+                //     var lat = self.markers[i].lat;
+                //     var lng = self.markers[i].lng;
+                //     if(lat > tmpNorthBound[0]){
+                //         tmpNorthBound[0] = lat;
+                //     }
+                //     if(lng < tmpNorthBound[1]){
+                //         tmpNorthBound[1] = lng;
+                //     }
+                //     if(lat < tmpSouthBound[0]){
+                //         tmpSouthBound[0] = lat;
+                //     }
+                //     if(lng > tmpSouthBound[1]){
+                //         tmpSouthBound[1] = lng;
+                //     }
+                // }
+                //
+                // northeastBound= tmpNorthBound;
+                // southwestBound = tmpSouthBound;
 
-                self.bounds = leafletBoundsHelpers.createBoundsFromArray([
-                    northeastBound,
-                    southwestBound
-                ]);
+                // self.bounds = leafletBoundsHelpers.createBoundsFromArray([
+                //     northeastBound,
+                //     southwestBound
+                // ]);
             }
         };
     }
