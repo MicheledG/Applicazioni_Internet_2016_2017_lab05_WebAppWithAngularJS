@@ -1,7 +1,7 @@
 /**
  * Created by chief on 29/05/2017.
  */
-var app = angular.module('App', ['ngRoute', 'ngResource', 'linesList', 'ui-leaflet']);
+var app = angular.module('App', ['ngRoute', 'ngResource', 'linesList', 'detailsTable', 'ui-leaflet']);
 
 app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService', 'leafletBoundsHelpers',
         function ($scope, $routeParams, $location, LineService, leafletBoundsHelpers) {
@@ -23,13 +23,15 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
             if(self.line){
                 self.selectedLineName = self.line.name;
                 var stops = LineService.getLineStops(self.line.name);
-                self.stopsToShow = [];
+                self.lineDetailHeaders = ['nr.', 'id', 'name'];
+                self.lineDetails = [];
                 //set sequence number of each stop
                 for(var i = 0; i < stops.length; i++){
-                    var stopToShow = {};
-                    stopToShow.sequenceNumber = i +1;
-                    stopToShow.stop = stops[i];
-                    self.stopsToShow.push(stopToShow);
+                    var lineDetail = [];
+                    lineDetail.push(i+1);
+                    lineDetail.push(stops[i].id);
+                    lineDetail.push(stops[i].name);
+                    self.lineDetails.push(lineDetail);
                 }
                 self.mapCenter = {};
                 self.markers = LineService.getLineMarkers(self.line.name); //since the parent is the owner of the map
@@ -95,24 +97,25 @@ app.controller('RouteCtrl', ['LineService', 'leafletBoundsHelpers',
             if(self.startAddress !== '' && self.arriveAddress !== ''){
                 self.markers = LineService.getLineMarkers('METRO');
                 self.routeGeoJson = LineService.getLineRoutes('METRO');
+                self.routeDetailHeaders = ['from', 'to', 'description'];
                 self.routeDetails = [];
 
-                var firstRouteDetail = {};
-                firstRouteDetail.from =  self.startAddress.toUpperCase();
-                firstRouteDetail.to = 'Lat: ' + self.markers[0].lat + ' - Lng: ' + self.markers[0].lng;
-                firstRouteDetail.description = 'reach the first stop';
+                var firstRouteDetail = [];
+                firstRouteDetail.push(self.startAddress.toUpperCase());
+                firstRouteDetail.push('Lat: ' + self.markers[0].lat + ' - Lng: ' + self.markers[0].lng);
+                firstRouteDetail.push('reach the first stop');
                 self.routeDetails.push(firstRouteDetail);
 
-                var middleRouteDetail = {};
-                middleRouteDetail.from = 'Lat: ' + self.markers[0].lat + ' - Lng: ' + self.markers[0].lng;
-                middleRouteDetail.to =  'Lat: ' + self.markers[self.markers.length-1].lat + ' - Lng: ' + self.markers[self.markers.length-1].lng;
-                middleRouteDetail.description = 'Take line METRO for 21 stops';
+                var middleRouteDetail = [];
+                middleRouteDetail.push('Lat: ' + self.markers[0].lat + ' - Lng: ' + self.markers[0].lng);
+                middleRouteDetail.push('Lat: ' + self.markers[21].lat + ' - Lng: ' + self.markers[21].lng);
+                middleRouteDetail.push('Take line METRO for 21 stops');
                 self.routeDetails.push(middleRouteDetail);
 
-                var lastRouteDetail = {};
-                lastRouteDetail.from =  'Lat: ' + self.markers[self.markers.length-1].lat + ' - Lng: ' + self.markers[self.markers.length-1].lng;
-                lastRouteDetail.to = self.arriveAddress.toUpperCase();
-                lastRouteDetail.description = 'reach the arrive point';
+                var lastRouteDetail = [];
+                lastRouteDetail.push( 'Lat: ' + self.markers[self.markers.length-1].lat + ' - Lng: ' + self.markers[self.markers.length-1].lng);
+                lastRouteDetail.push(self.arriveAddress.toUpperCase());
+                lastRouteDetail.push('reach the arrive point');
                 self.routeDetails.push(lastRouteDetail);
 
                 self.mapCenter = {};

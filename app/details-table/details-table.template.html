@@ -1,0 +1,21 @@
+<div class="container-fluid">
+    <div class="row">
+        <h2>{{$ctrl.tableTitle}}</h2>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th ng-repeat="header in $ctrl.tableHeaders">
+                        {{header}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="detail in $ctrl.tableDetails">
+                    <td ng-repeat="data in detail">
+                        {{data}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

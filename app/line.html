@@ -8,35 +8,7 @@
         <leaflet width="100%" height="480px" lf-center="ctrl.mapCenter" markers="ctrl.markers" geojson="ctrl.routes" bounds="ctrl.bounds"></leaflet>
 
         <div ng-if="ctrl.line">
-            <h2>Stops:</h2>
-            <table class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>
-                        nr.
-                    </th>
-                    <th>
-                        id
-                    </th>
-                    <th>
-                        name
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="stopToShow in ctrl.stopsToShow">
-                    <td>
-                        {{stopToShow.sequenceNumber}}
-                    </td>
-                    <td>
-                        {{stopToShow.stop.id}}
-                    </td>
-                    <td>
-                        {{stopToShow.stop.name}}
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <details-table table-title="'Stops:'" table-headers="ctrl.lineDetailHeaders" table-details="ctrl.lineDetails"></details-table>
         </div>
     </div>
 </div>
