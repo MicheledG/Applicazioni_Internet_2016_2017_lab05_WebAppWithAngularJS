@@ -115,6 +115,8 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
         };
 
         self.resetRoute = function(){
+            self.fromAddress = '';
+            self.toAddress = '';
             $location.path('/computeRoute');
         };
 
