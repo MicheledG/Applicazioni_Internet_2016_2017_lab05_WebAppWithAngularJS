@@ -120,7 +120,9 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
 
         self.computeRoute = function() {
             if (self.fromAddress !== '' && self.toAddress !== '') {
-                $location.path('/computeRoute/' + self.fromAddress + '/' + self.toAddress);
+                var fromAddress = encodeURIComponent(self.fromAddress);
+                var toAddress = encodeURIComponent(self.toAddress);
+                $location.path('/computeRoute/' + fromAddress + '/' + toAddress);
             }
         };
 
@@ -129,8 +131,8 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
          */
         if($routeParams.fromAddress && $routeParams.toAddress){
 
-            self.fromAddress = $routeParams.fromAddress;
-            self.toAddress = $routeParams.toAddress;
+            self.fromAddress = decodeURIComponent($routeParams.fromAddress);
+            self.toAddress = decodeURIComponent($routeParams.toAddress);
 
             /*
                 handle the data to show on the map
