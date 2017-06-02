@@ -64,67 +64,57 @@ angular
                 return stops;
             }
 
-            this.getLineMarkers = function (lineName) {
-                var markers = [];
-                var stops = this.getLineStops(lineName);
-
-                for (var i = 0; i < stops.length; i++) {
-                    var marker = {
-                        lat: 0,
-                        lng: 0,
-                        message: ""
-                    };
-                    marker.lat = stops[i].latLng[0];
-                    marker.lng = stops[i].latLng[1];
-                    marker.message = "id: "+ stops[i].id + "<br>";
-                    marker.message += "name: "+stops[i].name +"<br>";
-                    marker.message += "lines:<br>";
-                    for (var j=0; j<stops[i].lines.length; j++) {
-                        marker.message+="- <a href='#!/lines/"+stops[i].lines[j]+"'>"+stops[i].lines[j]+"</a><br>";
-                    }
-                    // markers.message+=" - ";
-                    // markers.message+= stops[i].name;
-                    markers.push(marker);
-                }
-                return markers;
-            };
-
-            this.getLineRoutes = function (lineName) {
+            this.getLineRoute = function (lineName) {
 
                 var geoJson = {};
-                geoJson.style = {
-                    weight: 3,
-                    opacity: 1,
-                    color: 'blue'
-                };
-
-                var featureCollection = {};
-                featureCollection.type = "FeatureCollection";
-                featureCollection.features = [];
+                
+                geoJson.type = "FeatureCollection";
+                geoJson.features = [];
 
                 //find all the routes covered by the specified line
                 for(var i = 0; i < SubwayRoutes.features.length; i++){
                     var feature = SubwayRoutes.features[i];
                     if(feature.properties.ref === lineName){
-                        featureCollection.features.push(feature);
+                        geoJson.features.push(feature);
                     }
                 }
 
-                for(var i = 0; i < BusRoutes.features.length; i++){
+                for(i = 0; i < BusRoutes.features.length; i++){
                     var feature = BusRoutes.features[i];
                     if(feature.properties.ref === lineName){
-                        featureCollection.features.push(feature);
+                        geoJson.features.push(feature);
                     }
                 }
 
-                for(var i = 0; i < TramRoutes.features.length; i++){
+                for(i = 0; i < TramRoutes.features.length; i++){
                     var feature = TramRoutes.features[i];
                     if(feature.properties.ref === lineName){
-                        featureCollection.features.push(feature);
+                        geoJson.features.push(feature);
                     }
                 }
 
-                geoJson.data = featureCollection;
+                //find all the stops of the line
+                var stops = this.getLineStops(lineName);
+
+                for (i = 0; i < stops.length; i++) {
+                    var feature = {};
+                    feature.type = 'Feature';
+                    feature.geometry = {};
+                    feature.geometry.type = 'Point';
+                    feature.geometry.coordinates = [
+                        stops[i].latLng[1], //lng
+                        stops[i].latLng[0]  //lat
+                    ];
+                    feature.properties = {};
+                    feature.properties.id = stops[i].id;
+                    feature.properties.name = stops[i].name;
+                    feature.properties.sequenceNumber = i+1;
+                    feature.properties.lines = [];
+                    for (var j=0; j<stops[i].lines.length; j++) {
+                        feature.properties.lines.push(stops[i].lines[j]);
+                    }
+                    geoJson.features.push(feature);
+                }
 
                 return geoJson;
             }
