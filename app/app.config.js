@@ -18,6 +18,11 @@ angular
                 controller: 'RouteCtrl',
                 controllerAs: 'ctrl'
             })
+            .when('/computeRoute/:fromAddress/:toAddress', {
+                templateUrl: 'route.html',
+                controller: 'RouteCtrl',
+                controllerAs: 'ctrl'
+            })
             .otherwise({ redirectTo: "/lines" });
 
             // configure html5 to get links working on jsfiddle
