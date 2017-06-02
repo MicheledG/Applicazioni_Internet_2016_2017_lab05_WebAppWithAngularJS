@@ -1,7 +1,7 @@
 /**
  * Created by chief on 29/05/2017.
  */
-var app = angular.module('App', ['ngRoute', 'ngResource', 'core.routes' ,'linesList', 'detailsTable', 'ui-leaflet']);
+var app = angular.module('App', ['ngRoute', 'ngResource', 'core.routes', 'core.geoJson' ,'linesList', 'detailsTable', 'ui-leaflet']);
 
 /*
     Handle lines and lines/:lineName views
@@ -9,8 +9,8 @@ var app = angular.module('App', ['ngRoute', 'ngResource', 'core.routes' ,'linesL
     2) lines/:lineName => show on map the route of the selected line and in a table below the details of each
     line stop
  */
-app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService', 'leafletBoundsHelpers',
-        function ($scope, $routeParams, $location, LineService, leafletBoundsHelpers) {
+app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService', 'leafletBoundsHelpers', 'GeoJsonHelper',
+        function ($scope, $routeParams, $location, LineService, leafletBoundsHelpers, GeoJsonHelper) {
 
             var self = this;
             /*
@@ -38,7 +38,6 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                 /*
                     handle data to show on the map
                  */
-                self.mapCenter = {};
                 self.lineRoute = {};
                 self.lineRoute.data = LineService.getLineRoute(self.line.name);
                 self.lineRoute.style = {
@@ -67,10 +66,8 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                         layer.bindPopup(popupContent);
                     }
                 };
-
-                self.bounds = leafletBoundsHelpers.createBoundsFromArray(
-                    computeGeoJsonBounds(self.lineRoute.data)
-                 );
+                self.mapCenter = {};
+                self.bounds = GeoJsonHelper.computeGeoJsonBounds(self.lineRoute.data);
 
                 /*
                     handle data to show in the details table
@@ -99,8 +96,8 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
 /*
     Handle "computeRoute/" view
  */
-app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers',
-    function (LineService, RouteService, leafletBoundsHelpers) {
+app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers','GeoJsonHelper',
+    function (LineService, RouteService, leafletBoundsHelpers, GeoJsonHelper) {
 
         var self = this;
         self.fromAddress = '';
@@ -122,7 +119,6 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
 
         self.computeRoute = function(){
             if(self.fromAddress !== '' && self.toAddress !== ''){
-
                 /*
                     handle the data to show on the map
                  */
@@ -173,8 +169,7 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
 
 
                 self.mapCenter = {};
-                self.bounds = leafletBoundsHelpers.createBoundsFromArray(
-                    computeGeoJsonBounds(self.routeGeoJson.data));
+                self.bounds = GeoJsonHelper.computeGeoJsonBounds(self.routeGeoJson.data);
 
                 /*
                     handle the data to show in the details table
@@ -220,7 +215,7 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
                     }
                 }
 
-                //remove the latitude and the longitude of the first and the last route detail to show
+                //remove the latitude and the longitude of the first and the last route detail in the showed table
                 //YES, I KNOW: IT'S A MESS -> NEEDS TO CHANGE DETAILS FROM ARRAYS TO OBJECTS
                 self.routeDetails[0][0] = self.fromAddress; //this change "from" information of first detail
                 self.routeDetails[self.routeDetails.length-1][1] = self.toAddress; //this change "to" information of last detail
@@ -228,56 +223,3 @@ app.controller('RouteCtrl', ['LineService', 'RouteService','leafletBoundsHelpers
         };
     }
 ]);
-
-function computeGeoJsonBounds(geoJson){
-
-    var northeastBound;
-    var southwestBound;
-    var tmpNorthBound = [-90.0, 180.0];
-    var tmpSouthBound = [90.0, -180.0];
-
-    //gather all the coordinates of the geojson
-    var geoJsonFeatures = geoJson.features;
-    var allGeoJsonCoordinates = [];
-    for(var i = 0; i < geoJsonFeatures.length; i++){
-        var geometry = geoJsonFeatures[i].geometry;
-        if(geometry.type === 'LineString'){
-            for (var j = 0; j < geometry.coordinates.length; j++){
-                allGeoJsonCoordinates.push(geometry.coordinates[j]);
-            }
-        }
-        else if(geometry.type === 'Point'){
-            var coordinate = [];
-            coordinate.push(geometry.coordinates[0]);
-            coordinate.push(geometry.coordinates[1]);
-            allGeoJsonCoordinates.push(coordinate);
-        }
-    }
-
-    //analyze all the coordinates
-    for(i = 0; i < allGeoJsonCoordinates.length; i++){
-        var lat = allGeoJsonCoordinates[i][1]; //latitude
-        var lng = allGeoJsonCoordinates[i][0]; //longitude
-        if(lat > tmpNorthBound[0]){
-            tmpNorthBound[0] = lat;
-        }
-        if(lng < tmpNorthBound[1]){
-            tmpNorthBound[1] = lng;
-        }
-        if(lat < tmpSouthBound[0]){
-            tmpSouthBound[0] = lat;
-        }
-        if(lng > tmpSouthBound[1]){
-            tmpSouthBound[1] = lng;
-        }
-    }
-
-    northeastBound = tmpNorthBound;
-    southwestBound = tmpSouthBound;
-
-    return [
-        northeastBound,
-        southwestBound
-    ];
-
-}
