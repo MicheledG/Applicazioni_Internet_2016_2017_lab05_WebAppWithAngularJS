@@ -9,6 +9,7 @@ angular
             function (LineService) {
                 var self = this;
                 //self.selectedLine = '';
+                LineService.getLinesList();
                 self.lines = LineService.getLines();
                 self.selectLine = function (lineName){
                     self.selectedLine = lineName;

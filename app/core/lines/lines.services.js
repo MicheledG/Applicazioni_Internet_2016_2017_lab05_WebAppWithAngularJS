@@ -3,8 +3,20 @@
  */
 angular
     .module('core.lines')
-    .service('LineService', ['LinesInfo', 'SubwayRoutes', 'BusRoutes', 'TramRoutes',
-        function (LinesInfo, SubwayRoutes, BusRoutes, TramRoutes) {
+    .service('LineService', ['LinesInfo', 'SubwayRoutes', 'BusRoutes', 'TramRoutes', '$resource',
+        function (LinesInfo, SubwayRoutes, BusRoutes, TramRoutes, $resource) {
+
+            var LinesList = $resource('http://localhost:8080/lines');
+
+            this.getLinesList = function () {
+                var linesList = LinesList.query(
+                    function() {
+                        //should be success callback
+                        console.log(linesList);
+                    }
+                );
+            };
+
 
             this.getLines = function () {
                 var lines = [];
