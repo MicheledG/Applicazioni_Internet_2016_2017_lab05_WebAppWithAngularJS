@@ -6,7 +6,10 @@ angular
     .service('LineService', ['LinesInfo', 'SubwayRoutes', 'BusRoutes', 'TramRoutes', '$http', '$q',
         function (LinesInfo, SubwayRoutes, BusRoutes, TramRoutes, $http, $q) {
 
-            this.getLineSnippetsRemote = function () {
+            var self = this;
+
+
+            self.getLineSnippetsRemote = function () {
                 //async action => return a promise
                 return $http({
                     method:'GET',
@@ -14,14 +17,19 @@ angular
                 });
             };
 
-            this.getLineDescriptionsRemote = function (lineSnippets){
+            self.getLineDescriptionRemote = function(lineName){
+                //async action => return a promise
+                return $http({
+                    method:'GET',
+                    url:'http://localhost:8080/lines/'+lineName+'?description=true'
+                });
+            };
+
+            self.getLineDescriptionsRemote = function (lineSnippets){
                 //sync actions => returns an array of promises not resolved yet
                 var lineDescriptions = [];
                 lineSnippets.data.forEach(function(lineSnippet){
-                    var lineDescription = $http({
-                        method:'GET',
-                        url:'http://localhost:8080/lines/'+lineSnippet.line+'?description=true'
-                    });
+                    var lineDescription = self.getLineDescriptionRemote(lineSnippet.line);
                     lineDescriptions.push(lineDescription);
                 });
                 /*
@@ -32,7 +40,7 @@ angular
 
             };
 
-            this.handleLineDescriptions = function (lineDescriptions) {
+            self.handleLineDescriptions = function (lineDescriptions) {
                 //transform the received data to be compliant with the data used in the Angular app
                 var lineDescriptionsToReturn = [];
                 lineDescriptions.forEach(function(lineDescription){
@@ -44,10 +52,10 @@ angular
                 return lineDescriptionsToReturn;
             };
 
-            this.getLinesRemote = function(){
-                return this.getLineSnippetsRemote()
-                    .then(this.getLineDescriptionsRemote)
-                    .then(this.handleLineDescriptions)
+            self.getLinesRemote = function(){
+                return self.getLineSnippetsRemote()
+                    .then(self.getLineDescriptionsRemote)
+                    .then(self.handleLineDescriptions)
                     .then(function(result){
                         console.log("Result: "+result);
                         return result;
@@ -58,8 +66,26 @@ angular
                     });
             };
 
-            this.getLineGeoJsonRemote = function(lineName){
+            self.getLineGeoJsonRemote = function(lineName){
+                return $http({
+                    method:'GET',
+                    url:'http://localhost:8080/lines/'+lineName+'?geoJson=true'
+                }).then(function (response) {
+                    return response.data.geoJson;
+                }).catch(function (error) {
+                    return error;
+                });
+            };
 
+            self.getLineStopsRemote = function(lineName){
+                return $http({
+                    method:'GET',
+                    url:'http://localhost:8080/lines/'+lineName+'?stops=true'
+                }).then(function (response) {
+                    return response.data.stops;
+                }).catch(function (error) {
+                    return error;
+                });
             };
 
             this.getLines = function () {

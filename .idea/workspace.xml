@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="fa62f795-265f-47cf-b4d9-cc7f64413848" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.js" afterPath="$PROJECT_DIR$/app/app.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/core/lines/lines.services.js" afterPath="$PROJECT_DIR$/app/core/lines/lines.services.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/lines-list/lines-list.component.js" afterPath="$PROJECT_DIR$/app/lines-list/lines-list.component.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -32,11 +32,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="lines.services.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="lines.services.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/core/lines/lines.services.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="211">
-              <caret line="36" column="21" lean-forward="true" selection-start-line="36" selection-start-column="21" selection-end-line="36" selection-end-column="21" />
+            <state relative-caret-position="-387">
+              <caret line="91" column="17" lean-forward="true" selection-start-line="91" selection-start-column="17" selection-end-line="91" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -102,24 +102,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="routes.services.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/core/routes/routes.services.js">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1190">
-              <caret line="72" column="37" lean-forward="false" selection-start-line="68" selection-start-column="24" selection-end-line="72" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#42#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="484">
+              <caret line="66" column="18" lean-forward="true" selection-start-line="66" selection-start-column="18" selection-end-line="66" selection-end-column="18" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/app.js">
+      <file leaf-file-name="geoJson.services.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/core/geoJson/geoJson.services.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2006">
-              <caret line="118" column="32" lean-forward="false" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
-              <folding />
+            <state relative-caret-position="-391">
+              <caret line="12" column="12" lean-forward="false" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+              <folding>
+                <element signature="e#0#42#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -210,11 +210,11 @@
         <option value="$PROJECT_DIR$/app/core/geoJson/geoJson.module.js" />
         <option value="$PROJECT_DIR$/app/core/geoJson/geoJson.services.js" />
         <option value="$PROJECT_DIR$/app/index.html" />
-        <option value="$PROJECT_DIR$/app/app.js" />
         <option value="$PROJECT_DIR$/app/core/lines/lines.module.js" />
         <option value="$PROJECT_DIR$/app/lines-list/lines-list.component.js" />
         <option value="$PROJECT_DIR$/app/lines-list/lines-list.template.html" />
         <option value="$PROJECT_DIR$/app/core/lines/lines.services.js" />
+        <option value="$PROJECT_DIR$/app/app.js" />
       </list>
     </option>
   </component>
@@ -498,7 +498,7 @@
       <workItem from="1497078951904" duration="599000" />
       <workItem from="1497085073893" duration="6486000" />
       <workItem from="1497178732158" duration="13684000" />
-      <workItem from="1497254520355" duration="7449000" />
+      <workItem from="1497254520355" duration="10593000" />
     </task>
     <task id="LOCAL-00001" summary="updated lines-list template&#10;&#10;added title in template">
       <created>1495712445350</created>
@@ -598,11 +598,18 @@
       <option name="project" value="LOCAL" />
       <updated>1497094885314</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Added base interaction between client and transport-module API&#10;&#10;the lines descriptions are retrieved by the transport-module API">
+      <created>1497262334746</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1497262334746</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="127658000" />
+    <option name="totallyTimeSpent" value="130802000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -674,7 +681,8 @@
     <MESSAGE value="There is a modified file in the configuration....&#10;&#10;.idea/workspace" />
     <MESSAGE value="Added cleaning of the from address and to address fields" />
     <MESSAGE value="Added first client-server communication in LinesService" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added first client-server communication in LinesService" />
+    <MESSAGE value="Added base interaction between client and transport-module API&#10;&#10;the lines descriptions are retrieved by the transport-module API" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added base interaction between client and transport-module API&#10;&#10;the lines descriptions are retrieved by the transport-module API" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -947,13 +955,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/core/geoJson/geoJson.services.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="918">
-          <caret line="56" column="47" lean-forward="false" selection-start-line="56" selection-start-column="47" selection-end-line="56" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/route.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
@@ -969,14 +970,6 @@
           <folding>
             <element signature="e#0#42#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2006">
-          <caret line="118" column="32" lean-forward="false" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1038,8 +1031,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/core/lines/lines.services.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="36" column="21" lean-forward="true" selection-start-line="36" selection-start-column="21" selection-end-line="36" selection-end-column="21" />
+        <state relative-caret-position="-387">
+          <caret line="91" column="17" lean-forward="true" selection-start-line="91" selection-start-column="17" selection-end-line="91" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/core/geoJson/geoJson.services.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-391">
+          <caret line="12" column="12" lean-forward="false" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#42#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="484">
+          <caret line="66" column="18" lean-forward="true" selection-start-line="66" selection-start-column="18" selection-end-line="66" selection-end-column="18" />
           <folding />
         </state>
       </provider>

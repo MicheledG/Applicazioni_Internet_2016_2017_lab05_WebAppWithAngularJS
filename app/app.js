@@ -39,51 +39,56 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                     handle data to show on the map
                  */
                 self.lineRoute = {};
-                self.lineRoute.data = LineService.getLineRoute(self.line.name);
+                self.lineRoute.data = {};
+                LineService.getLineGeoJsonRemote(self.line.name)
+                    .then(function(geoJson){
+                        self.lineRoute.data = geoJson;
+                    });
                 self.lineRoute.style = {
                     color: 'blue',
                     weight: 2
                 };
-                self.lineRoute.onEachFeature = function(feature, layer){
-                    var popupContent = null;
-                    var properties;
-                    //distinguish the possible popup
-                    if(feature.geometry.type === 'Point'){
-                        if(feature.properties){
-                            properties = feature.properties;
-                            popupContent = "name: "+properties.name+"<br>";
-                            popupContent += "id: "+properties.id+"<br>";
-                            popupContent += "lines:<br>";
-                            for(var i = 0; i < properties.lines.length; i++){
-                                var lineName = properties.lines[i];
-                                popupContent += "- <a href='#!/lines/"+lineName+"'>"+lineName+"</a><br>"
-                            }
-                        }
-                    }
-
-                    //if a popup content has been defined -> apply!
-                    if(popupContent){
-                        layer.bindPopup(popupContent);
-                    }
-                };
+                // self.lineRoute.onEachFeature = function(feature, layer){
+                //     var popupContent = null;
+                //     var properties;
+                //     //distinguish the possible popup
+                //     if(feature.geometry.type === 'Point'){
+                //         if(feature.properties){
+                //             properties = feature.properties;
+                //             popupContent = "name: "+properties.name+"<br>";
+                //             popupContent += "id: "+properties.id+"<br>";
+                //             popupContent += "lines:<br>";
+                //             for(var i = 0; i < properties.lines.length; i++){
+                //                 var lineName = properties.lines[i];
+                //                 popupContent += "- <a href='#!/lines/"+lineName+"'>"+lineName+"</a><br>"
+                //             }
+                //         }
+                //     }
+                //
+                //     //if a popup content has been defined -> apply!
+                //     if(popupContent){
+                //         layer.bindPopup(popupContent);
+                //     }
+                // };
                 self.mapCenter = {};
-                self.bounds = GeoJsonHelper.computeGeoJsonBounds(self.lineRoute.data);
+                //self.bounds = GeoJsonHelper.computeGeoJsonBounds(self.lineRoute.data);
 
                 /*
                     handle data to show in the details table
                  */
-                var stops = LineService.getLineStops(self.line.name);
+                //var stops = LineService.getLineStops(self.line.name);
                 self.lineDetailHeaders = ['nr.', 'id', 'name'];
                 self.lineDetails = [];
-                //set sequence number of each stop
-                for(var i = 0; i < stops.length; i++){
-                    var lineDetail = [];
-                    lineDetail.push(i+1);
-                    lineDetail.push(stops[i].id);
-                    lineDetail.push(stops[i].name);
-                    self.lineDetails.push(lineDetail);
-                }
-
+                LineService.getLineStopsRemote(self.line.name)
+                    .then(function(stops){
+                        stops.forEach(function(stop) {
+                            var lineDetail = [];
+                            lineDetail.push(stop.sequenceNumber);
+                            lineDetail.push(stop.id);
+                            lineDetail.push(stop.name);
+                            self.lineDetails.push(lineDetail);
+                        });
+                    });
 
             } else if($routeParams.lineName){
                 //there is a line name in the url but it is incorrect => redirect
