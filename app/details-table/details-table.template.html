@@ -12,7 +12,7 @@
             <tbody>
                 <tr ng-repeat="detail in $ctrl.tableDetails">
                     <td ng-repeat="data in detail">
-                        {{data}}
+                        <div ng-bind-html="data"></div>
                     </td>
                 </tr>
             </tbody>

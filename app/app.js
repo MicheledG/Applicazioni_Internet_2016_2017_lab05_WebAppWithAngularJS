@@ -1,7 +1,7 @@
 /**
  * Created by chief on 29/05/2017.
  */
-var app = angular.module('App', ['ngRoute', 'ngResource', 'core.routes', 'core.geoJson' ,'linesList', 'detailsTable', 'ui-leaflet']);
+var app = angular.module('App', ['ngRoute', 'core.routes', 'core.geoJson' ,'linesList', 'detailsTable', 'ui-leaflet']);
 
 /*
     Handle "/lines and "/lines/:lineName" views
@@ -39,45 +39,45 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                     handle data to show on the map
                  */
                 self.lineRoute = {};
-                self.lineRoute.data = {};
+                //self.lineRoute.data = {};
                 LineService.getLineGeoJsonRemote(self.line.name)
                     .then(function(geoJson){
                         self.lineRoute.data = geoJson;
+                        self.mapCenter = {};
+                        self.bounds = GeoJsonHelper.computeGeoJsonBounds(self.lineRoute.data);
                     });
                 self.lineRoute.style = {
                     color: 'blue',
                     weight: 2
                 };
-                // self.lineRoute.onEachFeature = function(feature, layer){
-                //     var popupContent = null;
-                //     var properties;
-                //     //distinguish the possible popup
-                //     if(feature.geometry.type === 'Point'){
-                //         if(feature.properties){
-                //             properties = feature.properties;
-                //             popupContent = "name: "+properties.name+"<br>";
-                //             popupContent += "id: "+properties.id+"<br>";
-                //             popupContent += "lines:<br>";
-                //             for(var i = 0; i < properties.lines.length; i++){
-                //                 var lineName = properties.lines[i];
-                //                 popupContent += "- <a href='#!/lines/"+lineName+"'>"+lineName+"</a><br>"
-                //             }
-                //         }
-                //     }
-                //
-                //     //if a popup content has been defined -> apply!
-                //     if(popupContent){
-                //         layer.bindPopup(popupContent);
-                //     }
-                // };
-                self.mapCenter = {};
-                //self.bounds = GeoJsonHelper.computeGeoJsonBounds(self.lineRoute.data);
+                self.lineRoute.onEachFeature = function(feature, layer){
+                    var popupContent = null;
+                    var properties;
+                    //distinguish the possible popup
+                    if(feature.geometry.type === 'Point'){
+                        if(feature.properties){
+                            properties = feature.properties;
+                            popupContent = "name: "+properties.stopName+"<br>";
+                            popupContent += "id: "+properties.stopId+"<br>";
+                            popupContent += "lines:<br>";
+                            for(var i = 0; i < properties.lines.length; i++){
+                                var lineName = properties.lines[i];
+                                popupContent += "- <a href='#!/lines/"+lineName+"'>"+lineName+"</a><br>"
+                            }
+                        }
+                    }
+
+                    //if a popup content has been defined -> apply!
+                    if(popupContent){
+                        layer.bindPopup(popupContent);
+                    }
+                };
 
                 /*
                     handle data to show in the details table
                  */
-                //var stops = LineService.getLineStops(self.line.name);
-                self.lineDetailHeaders = ['nr.', 'id', 'name'];
+
+                self.lineDetailHeaders = ['nr.', 'id', 'name', 'lines'];
                 self.lineDetails = [];
                 LineService.getLineStopsRemote(self.line.name)
                     .then(function(stops){
@@ -86,6 +86,12 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                             lineDetail.push(stop.sequenceNumber);
                             lineDetail.push(stop.id);
                             lineDetail.push(stop.name);
+                            var linesContent = '';
+                            stop.lines.forEach(function(line){
+                                //create the link to the line
+                                linesContent += '<a href="#!/lines/'+line+'">'+line+'</a> ';
+                            });
+                            lineDetail.push(linesContent);
                             self.lineDetails.push(lineDetail);
                         });
                     });
