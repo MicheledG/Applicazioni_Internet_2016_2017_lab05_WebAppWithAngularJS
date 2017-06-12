@@ -3,20 +3,64 @@
  */
 angular
     .module('core.lines')
-    .service('LineService', ['LinesInfo', 'SubwayRoutes', 'BusRoutes', 'TramRoutes', '$resource',
-        function (LinesInfo, SubwayRoutes, BusRoutes, TramRoutes, $resource) {
+    .service('LineService', ['LinesInfo', 'SubwayRoutes', 'BusRoutes', 'TramRoutes', '$http', '$q',
+        function (LinesInfo, SubwayRoutes, BusRoutes, TramRoutes, $http, $q) {
 
-            var LinesList = $resource('http://localhost:8080/lines');
-
-            this.getLinesList = function () {
-                var linesList = LinesList.query(
-                    function() {
-                        //should be success callback
-                        console.log(linesList);
-                    }
-                );
+            this.getLineSnippetsRemote = function () {
+                //async action => return a promise
+                return $http({
+                    method:'GET',
+                    url:'http://localhost:8080/lines'
+                });
             };
 
+            this.getLineDescriptionsRemote = function (lineSnippets){
+                //sync actions => returns an array of promises not resolved yet
+                var lineDescriptions = [];
+                lineSnippets.data.forEach(function(lineSnippet){
+                    var lineDescription = $http({
+                        method:'GET',
+                        url:'http://localhost:8080/lines/'+lineSnippet.line+'?description=true'
+                    });
+                    lineDescriptions.push(lineDescription);
+                });
+                /*
+                    return a single promise with all the promises created above.
+                    the returned promise is resolved when all the promises are resolved!
+                 */
+                return $q.all(lineDescriptions);
+
+            };
+
+            this.handleLineDescriptions = function (lineDescriptions) {
+                //transform the received data to be compliant with the data used in the Angular app
+                var lineDescriptionsToReturn = [];
+                lineDescriptions.forEach(function(lineDescription){
+                    var lineDescriptionToReturn = {};
+                    lineDescriptionToReturn.name = lineDescription.data.line;
+                    lineDescriptionToReturn.description = lineDescription.data.description;
+                    lineDescriptionsToReturn.push(lineDescriptionToReturn);
+                });
+                return lineDescriptionsToReturn;
+            };
+
+            this.getLinesRemote = function(){
+                return this.getLineSnippetsRemote()
+                    .then(this.getLineDescriptionsRemote)
+                    .then(this.handleLineDescriptions)
+                    .then(function(result){
+                        console.log("Result: "+result);
+                        return result;
+                    })
+                    .catch(function(error){
+                        console.log("error :"+error);
+                        return error;
+                    });
+            };
+
+            this.getLineGeoJsonRemote = function(lineName){
+
+            };
 
             this.getLines = function () {
                 var lines = [];

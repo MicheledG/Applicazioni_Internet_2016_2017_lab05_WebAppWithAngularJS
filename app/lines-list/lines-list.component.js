@@ -8,14 +8,16 @@ angular
         controller: ['LineService',
             function (LineService) {
                 var self = this;
-                //self.selectedLine = '';
-                LineService.getLinesList();
-                self.lines = LineService.getLines();
+                self.lines = [];
+                LineService.getLinesRemote()
+                    .then(function(lineDescriptions){
+                        self.lines = lineDescriptions;
+                    });
                 self.selectLine = function (lineName){
                     self.selectedLine = lineName;
                     self.onSelectedLine({lineName: lineName});
                     //console.log(LineService.getLineStops(lineName));
-                }
+                };
             }
         ],
         bindings:{
