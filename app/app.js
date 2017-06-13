@@ -9,8 +9,8 @@ var app = angular.module('App', ['ngRoute', 'core.routes', 'core.geoJson' ,'line
     2) "/lines/:lineName" => show on map the route of the selected line and in a table below the details of each
     line stop
  */
-app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService', 'leafletBoundsHelpers', 'GeoJsonHelper',
-        function ($scope, $routeParams, $location, LineService, leafletBoundsHelpers, GeoJsonHelper) {
+app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService', 'leafletBoundsHelpers', 'GeoJsonHelper', '$timeout',
+        function ($scope, $routeParams, $location, LineService, leafletBoundsHelpers, GeoJsonHelper, $timeout) {
 
             var self = this;
             /*
@@ -43,7 +43,15 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
                 LineService.getLineGeoJsonRemote(self.line.name)
                     .then(function(geoJson){
                         self.lineRoute.data = geoJson;
-                        self.mapCenter = {};
+                        /*
+                         bad workaround to let center the map on the geoJson
+                         on a cached geoJson.
+                         otherwise the map center object is seen after the bounds
+                         and leaflet goes crazy!
+                         */
+                        return $timeout(10);
+                    })
+                    .then(function(){
                         self.bounds = GeoJsonHelper.computeGeoJsonBounds(self.lineRoute.data);
                     });
                 self.lineRoute.style = {

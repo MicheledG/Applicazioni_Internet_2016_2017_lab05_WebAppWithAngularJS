@@ -13,7 +13,8 @@ angular
                 //async action => return a promise
                 return $http({
                     method:'GET',
-                    url:'http://localhost:8080/lines'
+                    url:'http://localhost:8080/lines',
+                    cache:true
                 });
             };
 
@@ -21,7 +22,8 @@ angular
                 //async action => return a promise
                 return $http({
                     method:'GET',
-                    url:'http://localhost:8080/lines/'+lineName+'?description=true'
+                    url:'http://localhost:8080/lines/'+lineName+'?description=true',
+                    cache: true
                 });
             };
 
@@ -69,7 +71,8 @@ angular
             self.getLineGeoJsonRemote = function(lineName){
                 return $http({
                     method:'GET',
-                    url:'http://localhost:8080/lines/'+lineName+'?geoJson=true'
+                    url:'http://localhost:8080/lines/'+lineName+'?geoJson=true',
+                    cache: true
                 }).then(function (response) {
                     return response.data.geoJson;
                 }).catch(function (error) {
@@ -80,7 +83,8 @@ angular
             self.getLineStopsRemote = function(lineName){
                 return $http({
                     method:'GET',
-                    url:'http://localhost:8080/lines/'+lineName+'?stops=true'
+                    url:'http://localhost:8080/lines/'+lineName+'?stops=true',
+                    cache: true
                 }).then(function (response) {
                     return response.data.stops;
                 }).catch(function (error) {
@@ -114,11 +118,11 @@ angular
                     }
                 }
                 return null;
-            }
+            };
 
             this.getStops = function(){
                 return LinesInfo.stops;
-            }
+            };
 
             this.getStop = function (stopId) {
 
@@ -131,7 +135,7 @@ angular
                     }
                 }
                 return null;
-            }
+            };
 
             this.getLineStops = function(lineName){
 
@@ -144,7 +148,7 @@ angular
                 }
 
                 return stops;
-            }
+            };
 
             this.getLineRoute = function (lineName) {
 
@@ -152,24 +156,24 @@ angular
                 
                 geoJson.type = "FeatureCollection";
                 geoJson.features = [];
-
+                var feature = {};
                 //find all the routes covered by the specified line
                 for(var i = 0; i < SubwayRoutes.features.length; i++){
-                    var feature = SubwayRoutes.features[i];
+                    feature = SubwayRoutes.features[i];
                     if(feature.properties.ref === lineName){
                         geoJson.features.push(feature);
                     }
                 }
 
                 for(i = 0; i < BusRoutes.features.length; i++){
-                    var feature = BusRoutes.features[i];
+                    feature = BusRoutes.features[i];
                     if(feature.properties.ref === lineName){
                         geoJson.features.push(feature);
                     }
                 }
 
                 for(i = 0; i < TramRoutes.features.length; i++){
-                    var feature = TramRoutes.features[i];
+                    feature = TramRoutes.features[i];
                     if(feature.properties.ref === lineName){
                         geoJson.features.push(feature);
                     }
@@ -179,7 +183,7 @@ angular
                 var stops = this.getLineStops(lineName);
 
                 for (i = 0; i < stops.length; i++) {
-                    var feature = {};
+                    feature = {};
                     feature.type = 'Feature';
                     feature.geometry = {};
                     feature.geometry.type = 'Point';
