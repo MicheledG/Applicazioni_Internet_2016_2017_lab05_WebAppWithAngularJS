@@ -31,82 +31,90 @@ app.controller('LineCtrl', ['$scope', '$routeParams', '$location', 'LineService'
             /*
                 2) handle specific "lines/:lineName" view
              */
-            self.line = LineService.getLine($routeParams.lineName);
-            if(self.line){
-                self.selectedLineName = self.line.name;
+            var lineName = $routeParams.lineName;
+            if(lineName !== undefined){
+                LineService.existLine($routeParams.lineName)
+                    .then(function(existLine) {
+                        if(existLine){
+                            self.selectedLineName = lineName;
 
-                /*
-                    handle data to show on the map
-                 */
-                self.lineRoute = {};
-                //self.lineRoute.data = {};
-                LineService.getLineGeoJsonRemote(self.line.name)
-                    .then(function(geoJson){
-                        self.lineRoute.data = geoJson;
-                        /*
-                         bad workaround to let center the map on the geoJson
-                         on a cached geoJson.
-                         otherwise the map center object is seen after the bounds
-                         and leaflet goes crazy!
-                         */
-                        return $timeout(10);
-                    })
-                    .then(function(){
-                        self.bounds = GeoJsonHelper.computeGeoJsonBounds(self.lineRoute.data);
-                    });
-                self.lineRoute.style = {
-                    color: 'blue',
-                    weight: 2
-                };
-                self.lineRoute.onEachFeature = function(feature, layer){
-                    var popupContent = null;
-                    var properties;
-                    //distinguish the possible popup
-                    if(feature.geometry.type === 'Point'){
-                        if(feature.properties){
-                            properties = feature.properties;
-                            popupContent = "name: "+properties.stopName+"<br>";
-                            popupContent += "id: "+properties.stopId+"<br>";
-                            popupContent += "lines:<br>";
-                            for(var i = 0; i < properties.lines.length; i++){
-                                var lineName = properties.lines[i];
-                                popupContent += "- <a href='#!/lines/"+lineName+"'>"+lineName+"</a><br>"
-                            }
+                            /*
+                             handle data to show on the map
+                             */
+
+                            self.lineRoute = {};
+                            LineService.getLineGeoJsonRemote(lineName)
+                                .then(function(geoJson){
+                                    self.lineRoute.data = geoJson;
+                                    /*
+                                     bad workaround to let center the map on the geoJson
+                                     on a cached geoJson.
+                                     otherwise the map center object is seen after the bounds
+                                     and leaflet goes crazy!
+                                     */
+                                    return $timeout(10);
+                                })
+                                .then(function(){
+                                    self.bounds = GeoJsonHelper.computeGeoJsonBounds(self.lineRoute.data);
+                                });
+
+                            self.lineRoute.style = {
+                                color: 'blue',
+                                weight: 2
+                            };
+
+                            self.lineRoute.onEachFeature = function(feature, layer){
+                                var popupContent = null;
+                                var properties;
+                                //distinguish the possible popup
+                                if(feature.geometry.type === 'Point'){
+                                    if(feature.properties){
+                                        properties = feature.properties;
+                                        popupContent = "name: "+properties.stopName+"<br>";
+                                        popupContent += "id: "+properties.stopId+"<br>";
+                                        popupContent += "lines:<br>";
+                                        for(var i = 0; i < properties.lines.length; i++){
+                                            var lineName = properties.lines[i];
+                                            popupContent += "- <a href='#!/lines/"+lineName+"'>"+lineName+"</a><br>"
+                                        }
+                                    }
+                                }
+
+                                //if a popup content has been defined -> apply!
+                                if(popupContent){
+                                    layer.bindPopup(popupContent);
+                                }
+                            };
+
+                            /*
+                             handle data to show in the details table
+                             */
+
+                            self.lineDetailHeaders = ['nr.', 'id', 'name', 'lines'];
+                            self.lineDetails = [];
+                            LineService.getLineStopsRemote(lineName)
+                                .then(function(stops){
+                                    stops.forEach(function(stop) {
+                                        var lineDetail = [];
+                                        lineDetail.push(stop.sequenceNumber);
+                                        lineDetail.push(stop.id);
+                                        lineDetail.push(stop.name);
+                                        var linesContent = '';
+                                        stop.lines.forEach(function(line){
+                                            //create the link to the line
+                                            linesContent += '<a href="#!/lines/'+line+'">'+line+'</a> ';
+                                        });
+                                        lineDetail.push(linesContent);
+                                        self.lineDetails.push(lineDetail);
+                                    });
+                                });
+
                         }
-                    }
-
-                    //if a popup content has been defined -> apply!
-                    if(popupContent){
-                        layer.bindPopup(popupContent);
-                    }
-                };
-
-                /*
-                    handle data to show in the details table
-                 */
-
-                self.lineDetailHeaders = ['nr.', 'id', 'name', 'lines'];
-                self.lineDetails = [];
-                LineService.getLineStopsRemote(self.line.name)
-                    .then(function(stops){
-                        stops.forEach(function(stop) {
-                            var lineDetail = [];
-                            lineDetail.push(stop.sequenceNumber);
-                            lineDetail.push(stop.id);
-                            lineDetail.push(stop.name);
-                            var linesContent = '';
-                            stop.lines.forEach(function(line){
-                                //create the link to the line
-                                linesContent += '<a href="#!/lines/'+line+'">'+line+'</a> ';
-                            });
-                            lineDetail.push(linesContent);
-                            self.lineDetails.push(lineDetail);
-                        });
+                        else {
+                            //there is a line name in the url but it is incorrect => redirect
+                            $location.path('/lines');
+                        }
                     });
-
-            } else if($routeParams.lineName){
-                //there is a line name in the url but it is incorrect => redirect
-                $location.path('/lines');
             }
         }
 ]);
