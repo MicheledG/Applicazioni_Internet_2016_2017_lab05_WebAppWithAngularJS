@@ -3,156 +3,79 @@
  */
 angular
     .module('core.routes')
-    .service('RouteService', ['LinesInfo', 'SubwayRoutes', 'BusRoutes', 'TramRoutes',
-        function (LinesInfo, SubwayRoutes, BusRoutes, TramRoutes) {
+    .service('RouteService', ['$http', '$q',
+        function ($http, $q) {
 
             var self = this;
-            self.i = 0;
-            self.translateAddressToLAtLng = function(address){
-                /*
-                    dumb implementation
-                 */
-                var coordinate = {};
-                if(self.i === 0){
-                    //from point -> fermi
-                    coordinate.lat = 45.076772;
-                    coordinate.lng = 7.587581;
-                    self.i = 1;
-                }
-                else{
-                    //to point -> lingotto
-                    coordinate.lat = 45.027018;
-                    coordinate.lng = 7.665261;
-                    self.i = 0;
-                }
-                return coordinate;
-            };
+            var API_KEY = "AIzaSyCm6hrZsb60Vs2Qve5CZg-2CGTa_cCpGd0";
 
-            self.getMinRouteFromRemoteService = function(fromLat, fromLng, toLat, toLng){
-                /*
-                    NO REMOTE INTERACTION
-                 */
+            /*
+                PRIVATE FUNCTIONS
+             */
+            function translateAddressToLatLng (address){
 
-                /*
-                 create an ad-hoc GeoJson with the following features:
-                 - the marker at the fromPoint
-                 - the line from the fromPoint to the first stop
-                 - the line METRO from Fermi to Lingotto
-                 - the line from the last stop to the to the toPoint
-                 - the marker at the toPoint
-                 */
+                var encodedAddress = encodeURIComponent(address);
+                var queryString =  "https://maps.googleapis.com/maps/api/geocode/json?";
+                queryString += "address="+encodedAddress+"&";
+                queryString += "key="+API_KEY;
 
-                var geoJson = {};
-                geoJson.type = 'FeatureCollection';
-                geoJson.features = [];
-                //insert the fromPoint marker
-                var featureFromPoint = {
-                    type: "Feature",
-                    properties: {
-                        sequenceNumber: 1,
-                        first: true
-                    },
-                    geometry: {
-                        type: "Point",
-                        coordinates: [
-                            fromLng,
-                            fromLat
-                        ]
-                    }
-                };
-                geoJson.features.push(featureFromPoint);
+                return $http.get(queryString)
+                    .then(function (response) {
+                        var googleCoordinates = response.data.results[0].geometry.location;
+                        return [googleCoordinates.lat, googleCoordinates.lng];
+                    })
+                    .catch(function (response) {
+                        console.log("error code: "+response.status);
+                        console.log("error: "+response.statusText);
+                    });
+            }
 
-                //insert the line from fromPoint to METRO
-                var featureFromPointToLine = {
-                    type: "Feature",
-                    properties: {
-                        sequenceNumber: 2,
-                        type: "foot",
-                        from: "Lat: "+fromLat+" - Lng: "+fromLng,
-                        to: "FERMI",
-                        distance: 150 //in meter
-                    },
-                    geometry: {
-                        type: "LineString",
-                        coordinates: [
-                            [
-                                fromLng,
-                                fromLat
-                            ],
-                            [
-                                7.5911782,
-                                45.0760004
-                            ]
-                        ]
-                    }
-                };
-                geoJson.features.push(featureFromPointToLine);
+            function getRouteGeoJsonRemote (fromLat, fromLng, toLat, toLng){
 
-                //insert the line METRO from Fermi to Lingotto
-                var featureMetroLine = SubwayRoutes.features[0];
-                featureMetroLine.properties.sequenceNumber = 3;
-                featureMetroLine.properties.line = "METRO";
-                featureMetroLine.properties.stops = 21;
-                geoJson.features.push(featureMetroLine);
+                var queryString =  "http://localhost:8080/route?";
+                queryString += "fromLat="+fromLat+"&";
+                queryString += "fromLng="+fromLng+"&";
+                queryString += "toLat="+toLat+"&";
+                queryString += "toLng="+toLng+"&";
+                queryString += "geoJson=true";
 
-                //insert the line from the METRO to the toPoint
-                var featureLineToToPoint = {
-                    type: "Feature",
-                    properties: {
-                        sequenceNumber: 4,
-                        type: "foot",
-                        from: "LINGOTTO",
-                        to: "Lat: "+toLat+" - Lng: "+toLng,
-                        distance: 200 //in meter
-                    },
-                    geometry: {
-                        type: "LineString",
-                        coordinates: [
-                            [
-                                toLng,
-                                toLat
-                            ],
-                            [
-                                7.6668751,
-                                45.03135
-                            ]
-                        ]
-                    }
-                };
-                geoJson.features.push(featureLineToToPoint);
+                return $http.get(queryString)
+                    .then(function (response) {
+                        var geoJson = response.data.geoJson;
+                        console.log("geoJson:"+geoJson);
+                        return geoJson;
+                    })
+                    .catch(function (response) {
+                        console.log("error code: "+response.status);
+                        console.log("error: "+response.statusText);
+                    });
 
-                //insert the marker at toPoint
-                var featureToPoint = {
-                    type: "Feature",
-                    properties: {
-                        sequenceNumber: 5,
-                        last: true
-                    },
-                    geometry: {
-                        type: "Point",
-                        coordinates: [
-                            toLng,
-                            toLat
-                        ]
-                    }
-                };
-                geoJson.features.push(featureToPoint);
+            }
 
-                return geoJson;
-            };
+            /*
+                EXPOSED API
+             */
+            self.getRouteGeoJson = function (fromAddress, toAddress) {
 
-            self.getMinRoute = function (fromAddress, toAddress) {
+                var coordinatePromises = [];
+                coordinatePromises.push(translateAddressToLatLng(fromAddress));
+                coordinatePromises.push(translateAddressToLatLng(toAddress));
 
-                var fromCoordinate = self.translateAddressToLAtLng(fromAddress);
-                var toCoordinate = self.translateAddressToLAtLng(toAddress);
-                var routeGeoJson = self.getMinRouteFromRemoteService(
-                    fromCoordinate.lat,
-                    fromCoordinate.lng,
-                    toCoordinate.lat,
-                    toCoordinate.lng
-                );
+                return $q.all(coordinatePromises)
+                    .then(function (coordinates) {
+                        var fromCoordinate = coordinates[0];
+                        var fromLat = fromCoordinate[0];
+                        var fromLng = fromCoordinate[1];
+                        var toCoordinate = coordinates[1];
+                        var toLat = toCoordinate[0];
+                        var toLng = toCoordinate[1];
 
-                return routeGeoJson;
+                        return getRouteGeoJsonRemote(fromLat, fromLng, toLat, toLng);
+                    })
+                    .catch(function (error) {
+                        console.log("error: "+error);
+                    });
+
             };
 
         }]);

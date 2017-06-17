@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fa62f795-265f-47cf-b4d9-cc7f64413848" name="Default" comment="Implemented cached GET request =&gt; better performance">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/core/lines/lines.bus-routes.values.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/core/lines/lines.lines-info.values.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/core/lines/lines.subway-routes.values.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/core/lines/lines.tram-routes.values.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.js" afterPath="$PROJECT_DIR$/app/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/core/lines/lines.services.js" afterPath="$PROJECT_DIR$/app/core/lines/lines.services.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/core/routes/routes.services.js" afterPath="$PROJECT_DIR$/app/core/routes/routes.services.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/index.html" afterPath="$PROJECT_DIR$/app/index.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -38,11 +32,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="lines.services.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="lines.services.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/core/lines/lines.services.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="762">
-              <caret line="91" column="50" lean-forward="false" selection-start-line="91" selection-start-column="50" selection-end-line="91" selection-end-column="50" />
+            <state relative-caret-position="-340">
+              <caret line="43" column="13" lean-forward="true" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -78,11 +72,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="42">
-              <caret line="155" column="10" lean-forward="true" selection-start-line="155" selection-start-column="10" selection-end-line="155" selection-end-column="10" />
+            <state relative-caret-position="-629">
+              <caret line="128" column="111" lean-forward="false" selection-start-line="128" selection-start-column="111" selection-end-line="128" selection-end-column="111" />
               <folding />
             </state>
           </provider>
@@ -91,8 +85,8 @@
       <file leaf-file-name="routes.services.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/core/routes/routes.services.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="688">
-              <caret line="41" column="0" lean-forward="true" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+            <state relative-caret-position="-3">
+              <caret line="34" column="59" lean-forward="false" selection-start-line="34" selection-start-column="59" selection-end-line="34" selection-end-column="59" />
               <folding />
             </state>
           </provider>
@@ -146,6 +140,8 @@
       <find>lineDescription.</find>
       <find>getLineDescriptions</find>
       <find>LinesInfo</find>
+      <find>all</find>
+      <find>getMinRoute</find>
     </findStrings>
     <replaceStrings>
       <replace>LinesAndStops</replace>
@@ -206,10 +202,10 @@
         <option value="$PROJECT_DIR$/app/details-table/details-table.module.js" />
         <option value="$PROJECT_DIR$/app/core/lines/lines.module.js" />
         <option value="$PROJECT_DIR$/app/details-table/details-table.template.html" />
-        <option value="$PROJECT_DIR$/app/app.js" />
-        <option value="$PROJECT_DIR$/app/core/routes/routes.services.js" />
         <option value="$PROJECT_DIR$/app/index.html" />
         <option value="$PROJECT_DIR$/app/core/lines/lines.services.js" />
+        <option value="$PROJECT_DIR$/app/core/routes/routes.services.js" />
+        <option value="$PROJECT_DIR$/app/app.js" />
       </list>
     </option>
   </component>
@@ -483,7 +479,7 @@
       <workItem from="1497178732158" duration="13684000" />
       <workItem from="1497254520355" duration="15181000" />
       <workItem from="1497340190926" duration="3852000" />
-      <workItem from="1497686241405" duration="4996000" />
+      <workItem from="1497686241405" duration="8738000" />
     </task>
     <task id="LOCAL-00001" summary="updated lines-list template&#10;&#10;added title in template">
       <created>1495712445350</created>
@@ -611,11 +607,18 @@
       <option name="project" value="LOCAL" />
       <updated>1497342838481</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Removed local information about lines">
+      <created>1497693590354</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1497693590354</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="144238000" />
+    <option name="totallyTimeSpent" value="147980000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -690,7 +693,9 @@
     <MESSAGE value="Implementing geoJson retrieve from server" />
     <MESSAGE value="Implemented geoJson from remote service" />
     <MESSAGE value="Implemented cached GET request =&gt; better performance" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented cached GET request =&gt; better performance" />
+    <MESSAGE value="Removed local informations about lines" />
+    <MESSAGE value="Removed local information about lines" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed local information about lines" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1014,22 +1019,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="155" column="10" lean-forward="true" selection-start-line="155" selection-start-column="10" selection-end-line="155" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/core/routes/routes.services.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="688">
-          <caret line="41" column="0" lean-forward="true" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/core/lines/lines.lines-info.values.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -1048,8 +1037,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/core/lines/lines.services.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="762">
-          <caret line="91" column="50" lean-forward="false" selection-start-line="91" selection-start-column="50" selection-end-line="91" selection-end-column="50" />
+        <state relative-caret-position="-340">
+          <caret line="43" column="13" lean-forward="true" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/core/routes/routes.services.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3">
+          <caret line="34" column="59" lean-forward="false" selection-start-line="34" selection-start-column="59" selection-end-line="34" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-629">
+          <caret line="128" column="111" lean-forward="false" selection-start-line="128" selection-start-column="111" selection-end-line="128" selection-end-column="111" />
           <folding />
         </state>
       </provider>
